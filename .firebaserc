@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "vicci-6555e": {
+      "hosting": {
+        "vicci-studio": [
+          "vicci-6555e"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "vicci-6555e"
+  }
+}

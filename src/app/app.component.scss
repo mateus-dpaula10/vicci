@@ -1,0 +1,10 @@
+:host{
+    display: flex;
+    height: 100%;
+    
+    .main{
+        padding: 2rem;
+        flex:1;
+        overflow-y: auto;
+    }
+}

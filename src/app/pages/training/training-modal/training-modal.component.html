@@ -1,0 +1,59 @@
+<div class="main">
+    <mat-dialog-content>
+        <form [formGroup]="formNameTraining" class="formName">
+            <mat-form-field appearance="outline" class="fieldName">
+                <mat-label>Nome do treino</mat-label>
+                <input matInput formControlName="name" type="text" id="name" placeholder="Insira o nome do treino">
+            </mat-form-field>
+        </form>
+        @if(isAdding){
+        <form [formGroup]="formTraining">
+            <mat-form-field appearance="outline">
+                <mat-select matNativeControl formControlName="equipment" name="equipment" placeholder="Selecione">
+                    @for (equipment of equipments; track equipment) {
+                    <mat-option [value]="equipment.name">{{ equipment.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Repetições</mat-label>
+                <input matInput formControlName="reps" type="number" id="reps" placeholder="Repetições">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Séries</mat-label>
+                <input matInput formControlName="sets" type="number" id="sets" placeholder="Séries">
+            </mat-form-field>
+
+            <vicci-button accent (click)="saveExercise()">Salvar</vicci-button>
+        </form>
+        }
+
+        <div class="exercises">
+            @for (exercise of exercisesArray; track exercise) {
+            <div class="exerciseItem">
+                <mat-form-field>
+                    <mat-label>Equipamento</mat-label>
+                    <input matInput type="text" id="equipmentRead" placeholder="Equipamento"
+                        value="{{exercise.equipment}}" readonly>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Repetições</mat-label>
+                    <input matInput type="number" id="repsRead" placeholder="Repetições" value="{{exercise.reps}}"
+                        readonly>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Séries</mat-label>
+                    <input matInput type="number" id="setsRead" placeholder="Séries" value="{{exercise.sets}}" readonly>
+                </mat-form-field>
+                <vicci-button warn (click)="onDelete(exercise)"> Excluir </vicci-button>
+
+            </div>
+            }
+        </div>
+        <div class="addExercise" (click)="toggleAdding()">
+            <img src="../../../../assets/images/plus.png">
+            <p>Adicionar exercício</p>
+        </div>
+        <vicci-button accent (click)="onSubmit()"> Salvar </vicci-button>
+    </mat-dialog-content>
+</div>

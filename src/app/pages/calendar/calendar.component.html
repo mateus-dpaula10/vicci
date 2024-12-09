@@ -1,0 +1,61 @@
+<div class="main">
+    <h2>{{ currentMonthName() }} {{ currentYear }}</h2>
+    <div class="buttons">
+        <div class="helper-button"><vicci-button class="button" accent (click)="previousMonth()"> Mês
+                anterior</vicci-button></div>
+        <div class="helper-button"><vicci-button class="button" accent (click)="nextMonth()"> Proximos
+                mês</vicci-button></div>
+    </div>
+    <div class="helper">
+        <div class="calendar">
+            <div class="week">Domingo</div>
+            <div class="week">Segunda</div>
+            <div class="week">Terça</div>
+            <div class="week">Quarta</div>
+            <div class="week">Quinta</div>
+            <div class="week">Sexta</div>
+            <div class="week">Sábado</div>
+            @for(day of daysOfMonth; track day; let i = $index){
+            <div class="box-day" (click)="openDay(day)">
+                @if (day.isCurrentMonth) {
+                    <div class="day">
+                        {{ day.day }}
+                    </div>
+                } 
+                @else {
+                    <div class="day previousMonth"> {{day.day}}</div>
+                }
+                <div class="schedules">
+                    @for(class of day.classesByTeacher; track class){
+                    <div class="class" [ngStyle]="{'background-color':  class.color}">
+                        {{class.classesCount}}
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+        <div class="mainLabel">
+
+            <div class="labels">
+                <div class="titleLabel">Professores contratados</div>
+                @for(teacher of teachersH; track teacher){
+                    <div class="label">
+                        <div class="class" [ngStyle]="{'background-color':  teacher.color}"></div>{{teacher.name}}
+                    </div>
+                }
+            </div>
+            <div class="labels">
+                <div class="titleLabel">Professores associados</div>
+                @for(teacher of teachersA; track teacher){
+                    <div class="label">
+                        <div class="class" [ngStyle]="{'background-color':  teacher.color}"></div>{{teacher.name}}
+                    </div>
+                }
+            </div>
+            <div class="button">
+                <vicci-button accent (click)="openDialog()">Adicionar agenda</vicci-button>
+            </div>
+        </div>
+    </div>
+</div>

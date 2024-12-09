@@ -1,0 +1,57 @@
+<div class="main">
+    @if(isEditing){
+        <h1>Edição de desempenho</h1>
+    } @else {
+        <h2> Desempenho de {{studentName}} </h2>
+    }
+    <mat-dialog-content>
+        <form [formGroup]="formPerformance">
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>Altura</mat-label>
+                <input matInput formControlName="height" type="text" id="height" placeholder="Insira a altura">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>Peso</mat-label>
+                <input matInput formControlName="weight" type="text" id="weight" placeholder="Insira o peso">
+                <p matSuffix> kg&nbsp;</p>
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>Massa magra</mat-label>
+                <input matInput formControlName="leanMass" type="text" id="leanMass" placeholder="Insira a massa magra">
+                <p matSuffix> %&nbsp;</p>
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>Densidade gordura corporal</mat-label>
+                <input matInput formControlName="bodyFat" type="text" id="bodyFat" placeholder="Insira a gordura corporal">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>Densidade ossea</mat-label>
+                <input matInput formControlName="boneDensity" type="text" id="boneDensity" placeholder="Insira a densidade óssea">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>Metabolismo basal</mat-label>
+                <input matInput formControlName="bmr" type="text" id="bmr" placeholder="Insira o metabolismo basal">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>Nivel de agua no corpo</mat-label>
+                <input matInput formControlName="bodyWater" type="text" id="bodyWater" placeholder="Insira o nível de água">
+                <p matSuffix> %&nbsp;</p>
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                <mat-label>IMC</mat-label>
+                <input matInput formControlName="bmi" type="text" id="bmi" placeholder="Insira o IMC">
+            </mat-form-field>
+           
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        @if (!isEditing) {
+            <vicci-button accent (click)="onSubmit()" >Salvar</vicci-button>
+            <vicci-button mat-dialog-close>Fechar</vicci-button>
+        } @else {
+
+            <vicci-button accent (click)="onSubmitEdit()">Salvar</vicci-button>
+            <vicci-button warn (click)="onDelete()">Excluir</vicci-button>
+        }
+    </mat-dialog-actions>
+</div>

@@ -1,0 +1,64 @@
+<div class="main">
+    <div class="divLogo">
+        <img src="../../../assets/logo vicci preta.png" alt="Logo Vicci" srcset="" class="imgLogo">
+    </div>
+    @if (!create){
+    <div class="formLogin">
+        <div class="divForm">
+            <form [formGroup]="formLogin">
+                <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" type="text" id="email" placeholder="Insira o email">
+                </mat-form-field>
+                <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                    <mat-label>Senha</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" type="text"
+                        id="password" placeholder="Insira a senha">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                </mat-form-field>
+            </form>
+            <vicci-button accent (click)="onSubmitLogin()"> Entrar</vicci-button>
+            <p class="forgot">Esqueci minha senha</p>
+            <p class="changeDiv" (click)="changeDiv()">Criar conta</p>
+        </div>
+
+        <div>
+        </div>
+    </div>
+    }
+    @else{
+    <div class="formCreate">
+        <div class="divForm">
+            <form [formGroup]="formCreate">
+                <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" type="text" id="email" placeholder="Insira o email">
+                </mat-form-field>
+                <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                    <mat-label>Senha</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" type="text"
+                        id="password" placeholder="Insira a senha" minlength="6">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field subscriptSizing="dynamic" appearance="outline">
+                    <mat-label>Confirmar senha</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="confirmPassword" type="text"
+                        id="confirmPassword" placeholder="Insira a senha" minlength="6">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                </mat-form-field>
+            </form>
+            <vicci-button accent (click)="onSubmitCreate()"> Criar conta</vicci-button>
+            <p class="changeDiv" (click)="changeDiv()">Entrar em uma conta ja existente</p>
+        </div>
+    </div>
+    }
+</div>

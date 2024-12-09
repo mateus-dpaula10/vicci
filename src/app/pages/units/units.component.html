@@ -1,0 +1,115 @@
+<h1>Unidades</h1>
+
+<vicci-button accent (click)="openDialog()"> Cadastrar unidade </vicci-button>
+
+<table mat-table [dataSource]="units$" multiTemplateDataRows class="mat-elevation-z8">
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Nome </th>
+    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="address">
+    <th mat-header-cell *matHeaderCellDef> Endereço</th>
+    <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="businessHours">
+    <th mat-header-cell *matHeaderCellDef> Horario </th>
+    <td mat-cell *matCellDef="let element"> {{element.businessHours}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="photo">
+    <th mat-header-cell *matHeaderCellDef> Foto </th>
+    <td mat-cell *matCellDef="let unit">
+      @for (item of unit.photos; track $index) {
+      <img class="img" [src]="item">
+      } @empty {
+      <p>Unidade sem foto</p>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button (click)="cleanImagePreview()" mat-icon-button aria-label="expand row"
+        (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+        @if (expandedElement === element) {
+        <mat-icon>keyboard_arrow_up</mat-icon>
+        } @else {
+        <mat-icon>keyboard_arrow_down</mat-icon>
+        }
+      </button>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let unit" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="element-detail" [@detailExpand]="unit == expandedElement ? 'expanded' : 'collapsed'">
+        <form>
+          <div class="fields">
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Nome</mat-label>
+              <input matInput placeholder="Nome" #name="ngModel" [ngModel]="unit.name" name="name"
+                autocomplete="off">
+            </mat-form-field>
+
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Endereço</mat-label>
+              <input matInput placeholder="Endereço" #address="ngModel" [ngModel]="unit.address" name="address"
+                autocomplete="off">
+            </mat-form-field>
+
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Horario</mat-label>
+              <input matInput placeholder="Horario" #businessHours="ngModel" [ngModel]="unit.businessHours"
+                name="businessHours" autocomplete="off">
+            </mat-form-field>
+
+          </div>
+          <div class="file">
+            @for (item of unit.photos; track $index) {
+              <img class="img" [src]="item">
+              } @empty {
+              <p>Unidade sem foto</p>
+              }
+            <!-- <label for="photoEditUnits">
+              <div>
+                @if (imagePreview) {
+                <img [src]="imagePreview" alt="" srcset="">
+                } @else {
+                <img [src]="element.photo" alt="" srcset="">
+                }
+              </div>
+              <div>
+                <span>Editar imagem</span>
+                <input type="File" (change)="onImageSelected($event.target, element)" id="photoEditUnits"
+                  name="photoEditUnits">
+              </div>
+            </label> -->
+          </div>
+          <div class="images">
+
+          </div>
+          <vicci-button warn (click)="onDelete(unit.id, unit.photo)">Excluir</vicci-button>
+          <vicci-button accent
+            (click)="onSubmit(unit.id, name, address, businessHours, unit.photo)">Salvar</vicci-button>
+        </form>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+    [class.example-expanded-row]="expandedElement === row"
+    (click)="expandedElement = expandedElement === row ? null : row" (click)="cleanImagePreview()">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+  <tr class="mat-row noData" *matNoDataRow>
+    <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+      Tabela sem dados.
+    </td>
+  </tr>
+</table>

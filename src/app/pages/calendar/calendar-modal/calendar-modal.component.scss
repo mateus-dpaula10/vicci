@@ -1,0 +1,40 @@
+.main {
+    width: 70rem;
+    height: 47rem;
+    overflow-x: hidden;
+
+    .header {
+        margin: 1rem;
+        background-color: #fff;
+        color: var(--accent-color);
+        text-align: center;
+    }
+
+    .box-hour {
+        display: flex;
+        border-top: 1px solid #c0c0c0;
+    }
+
+    .hours {
+        width: 100%;
+        overflow-x: hidden;
+
+        .hour {
+            display: flex;
+            width: 2rem;
+            height: 4rem;
+            margin-left: 1rem;
+            align-items: center;
+        }
+    }
+
+    .schedules {
+        display: flex;
+        margin: 0px 10px;
+        flex-direction: column;
+        padding: 1rem;
+        border-radius: 1rem;
+        justify-content: center;
+        cursor: pointer;
+    }
+}

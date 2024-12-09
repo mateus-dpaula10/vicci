@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Criar professor</h2>
+<mat-dialog-content>
+    <form [formGroup]="formAssociate">
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" type="text" id="name" placeholder="Insira o nome">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Especialidade do professor</mat-label>
+            <input matInput formControlName="expertise" type="text" id="expertise" placeholder="Insira a especialidade">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Horários</mat-label>
+            <input matInput formControlName="schedules" type="text" id="schedules"
+                placeholder="Insira a agenda do professor">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <vicci-button (click)="onSubmit()" accent>Salvar</vicci-button>
+    <vicci-button mat-dialog-close>Fechar</vicci-button>
+</mat-dialog-actions>

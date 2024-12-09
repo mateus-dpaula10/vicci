@@ -1,0 +1,88 @@
+<h1>Equipamentos</h1>
+
+<vicci-button (click)="openDialog()" accent> Cadastrar Equipamento </vicci-button>
+
+<table mat-table [dataSource]="equipments$" multiTemplateDataRows class="mat-elevation-z8">
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Nome </th>
+    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="link">
+    <th mat-header-cell *matHeaderCellDef> Link</th>
+    <td mat-cell *matCellDef="let element"> {{element.link}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="photo">
+    <th mat-header-cell *matHeaderCellDef> Foto </th>
+    <td mat-cell *matCellDef="let element">
+      <img class="img" [src]="element.photo">
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button aria-label="expand row"
+        (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+        @if (expandedElement === element) {
+        <mat-icon>keyboard_arrow_up</mat-icon>
+        } @else {
+        <mat-icon>keyboard_arrow_down</mat-icon>
+        }
+      </button>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <form>
+          <div class="fields">
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Nome</mat-label>
+              <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
+                autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Link</mat-label>
+              <input matInput placeholder="Link" #link="ngModel" [ngModel]="element.link" name="link"
+                autocomplete="off">
+            </mat-form-field>
+            <div class="file">
+              <label for="photoEditEquipments">
+                <div>
+                  @if(imagePreview){
+                  <img [src]="imagePreview" alt="" srcset="">
+                  }@else{
+                  <img [src]="element.photo" alt="" srcset="">
+                  }
+                </div>
+                <div>
+                  <span>Editar imagem</span>
+                  <input type="File" (change)="onImageSelected($event.target, element)" id="photoEditEquipments" name="photoEditEquipments">
+                </div>
+              </label>
+            </div>
+          </div>
+          <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+          <vicci-button accent (click)="onSubmit(element.id, name, link, element.photo)">Salvar</vicci-button>
+        </form>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+    [class.example-expanded-row]="expandedElement === row"
+    (click)="expandedElement = expandedElement === row ? null : row">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+  <tr class="mat-row noData" *matNoDataRow>
+    <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+      Tabela sem dados.
+    </td>
+  </tr>
+</table>

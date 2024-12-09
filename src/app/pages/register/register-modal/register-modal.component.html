@@ -1,0 +1,86 @@
+<h2 mat-dialog-title>Criar aluno</h2>
+<mat-dialog-content>
+  <form [formGroup]="formStudent">
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Nome</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        type="text"
+        id="name"
+        placeholder="Insira o nome"
+      />
+    </mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        id="email"
+        placeholder="Insira o email"
+      />
+    </mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Celular</mat-label>
+      <input
+        matInput
+        formControlName="phoneNumber"
+        type="tel"
+        mask="(00)00000-0000"
+        id="phoneNumber"
+        placeholder="Insira o número"
+      />
+    </mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>CPF</mat-label>
+      <input
+        matInput
+        formControlName="cpf"
+        type="text"
+        id="cpf"
+        mask="000.000.000-00"
+        placeholder="Insira o CPF"
+      />
+    </mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Senha</mat-label>
+      <input
+        type="password"
+        matInput
+        formControlName="password"
+        id="password"
+        placeholder="Insira a senha"
+      />
+    </mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Data de nascimento</mat-label>
+      <input
+        matInput
+        formControlName="birthDate"
+        type="text"
+        id="birthDate"
+        placeholder="dd/mm/aaaa"
+      />
+    </mat-form-field>
+
+    <mat-label>Foto</mat-label>
+    <div class="file">
+      <label for="photo">
+        <span>Anexar arquivo</span>
+        <mat-icon fontIcon="file_upload"></mat-icon>
+      </label>
+      @if (imagePreview) {<img [src]="imagePreview" alt="Preview" />}
+      <input
+        type="File"
+        (change)="onImageSelected($event.target)"
+        id="photo"
+        placeholder="Insira a agenda do professor"
+      />
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <vicci-button (click)="onSubmit()" accent>Salvar</vicci-button>
+  <vicci-button mat-dialog-close>Fechar</vicci-button>
+</mat-dialog-actions>

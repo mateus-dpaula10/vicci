@@ -1,0 +1,60 @@
+.main {
+    padding-top: 1rem;
+    align-items: center;
+    min-width: 800px;
+
+    h2,
+    h1 {
+        text-align: center;
+    }
+
+    mat-dialog-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+    }
+
+    form {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+
+        mat-form-field {
+            width: 100%;
+        }
+
+        mat-form-field.fieldName {
+            width: 50%;
+        }
+    }
+
+
+    .addExercise {
+        background-color: var(--accent-color);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        cursor: pointer;
+        width: 50%;
+
+        img {
+            width: 40px;
+        }
+    }
+
+    .exerciseItem {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+
+        vicci-button {
+            width: 28%;
+        }
+    }
+}

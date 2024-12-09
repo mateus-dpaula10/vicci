@@ -1,0 +1,78 @@
+<h1>Desempenho</h1>
+<div class="mainDiv">
+  <div class="selectStudent">
+    <form [formGroup]="formSelectStudent">
+      <mat-form-field appearance="outline">
+        <mat-select matNativeControl formControlName="student" name="student" placeholder="Selecione">
+          @for (student of students; track student) {
+          <mat-option class="options" [value]="student.id">{{ student.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </form>
+    <vicci-button accent (click)="findStudent()"> Buscar </vicci-button>
+
+  </div>
+</div>
+<div class="infoDiv">
+  @if(studentInfo){
+
+  <div class="studentInfo">
+    @if(!studentInfo[0].photo){
+    <img src="../../../assets/images/noPhoto.png" alt="" srcset="" class="studentPhoto">
+    }
+    @else {
+    <img src="{{studentInfo[0].photo}}" alt="" srcset="" class="studentPhoto">
+    }
+    <h2>{{studentInfo[0].name}}</h2>
+  </div>
+  <div class="performance">
+    <div class="performanceItems">
+      <div class="items addItem" (click)="openDialog()">
+        <div class="add">
+          <img src="../../../assets/images/plus.png" alt="" srcset="">
+          <p>Adicionar desempenho</p>
+        </div>
+      </div>
+
+      @for(performance of studentPerformance; track performance){
+      <div class="items" (click)="openPerformance(performance)">
+        <p class="head">{{performance.createdDate}}</p>
+        <hr>
+        <div class="itemInfo">
+          <div class="informationLine">
+            <p>Altura: </p> <span>{{performance.height}}</span>
+          </div>
+          <div class="informationLine">
+            <p>Peso: </p> <span>{{performance.weight}}</span>
+          </div>
+          <div class="informationLine">
+            <p>Porcentagem de massa magra: </p> <span>{{performance.leanMass}}</span>
+          </div>
+          <div class="informationLine">
+            <p>Densidade gordura corporal: </p> <span>{{performance.bodyFat}}</span>
+          </div>
+          <div class="informationLine">
+            <p>Densidade óssea: </p> <span>{{performance.boneDensity}}</span>
+          </div>
+          <div class="informationLine">
+            <p>Taxa de metabolismo basal: </p> <span>{{performance.bmr}}</span>
+          </div>
+          <div class="informationLine">
+            <p>Nível de agua no corpo: </p> <span>{{performance.bodyWater}}</span>
+          </div>
+          <div class="informationLine">
+            <p>IMC: </p> <span>{{performance.bmi}}</span>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+  @else {
+  <div class="noInfo">
+    <p>Selecione o aluno para ver as informacoes</p>
+  </div>
+  }
+</div>

@@ -1,0 +1,27 @@
+<div class="main" id="mainModal">
+    <div class="hours">
+        <div class="header">
+            <h2>Dia {{data.day}}</h2>
+        </div>
+
+        <div class="body">
+            @for(hour of hoursDay; track hour){
+            <div class="box-hour">
+                <div class="hour">
+                    {{ hour.hours }}h
+                </div>
+                @for (schedule of hour.schedules; track schedule){
+                <div class="schedules" [ngStyle]="{'background-color':  schedule.teacher.color}" (click)="onDelete(schedule.id)">
+                    <div class="scheduleTeacher">
+                        Professor: {{schedule.teacher.name}}
+                    </div>
+                    <div class="scheduleTeacher">
+                        Aluno: {{schedule.student}}
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>

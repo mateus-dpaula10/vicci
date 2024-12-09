@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Criar Unidade</h2>
+<mat-dialog-content>
+    <form [formGroup]="formUnits">
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" type="text" id="name" placeholder="Insira o nome">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
+            <mat-label>Endereço</mat-label>
+            <input matInput formControlName="address" type="text" id="address" placeholder="Insira o Endereço">
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
+            <mat-label>Horário</mat-label>
+            <input matInput formControlName="businessHours" type="text" id="businessHours"
+                placeholder="Insira o horário">
+        </mat-form-field>
+
+        <mat-label>Foto</mat-label>
+        <div class="file">
+            <label for="photo">
+                <span>Anexar arquivo</span>
+                <mat-icon fontIcon="file_upload"></mat-icon>
+            </label>
+
+            @for (preview of imagesPreview; track preview) {
+                <img [src]="preview" alt="Preview">
+            }
+            
+            <input multiple="true" type="file" (change)="onImageSelected($event.target)" id="photo"
+                placeholder="Insira a agenda do professor">
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <vicci-button (click)="onSubmit()" accent> Salvar </vicci-button>
+    <vicci-button mat-dialog-close>Fechar</vicci-button>
+</mat-dialog-actions>

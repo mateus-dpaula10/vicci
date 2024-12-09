@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Criar funcionário</h2>
+<mat-dialog-content>
+    <form [formGroup]="formEmployees">
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" type="text" id="name" placeholder="Insira o nome">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>CPF</mat-label>
+            <input matInput formControlName="cpf" type="text" id="cpf" mask="000.000.000-00" placeholder="Insira o CPF">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Função</mat-label>
+            <input matInput formControlName="functionEmployee" type="text" id="functionEmployee"
+                placeholder="Insira a função">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Data de Contratação</mat-label>
+            <input matInput formControlName="hiringDate" type="text" id="hiringDate" mask="00/00/0000"
+                placeholder="Insira a data de contratação">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Unidade que atua</mat-label>
+            <mat-select matNativeControl formControlName="unit" name="unit" placeholder="Selecione">
+                @for (unit of units; track unit) {
+                <mat-option [value]="unit.name">{{ unit.name }}</mat-option>
+                }
+            </mat-select>
+            <!-- <input matInput formControlName="unit" type="text" id="unit" placeholder="Insira a unidade em que atua"> -->
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Status</mat-label>
+            <input matInput formControlName="status" type="text" id="status" placeholder="Insira o status">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <vicci-button (click)="onSubmit()" accent>Salvar</vicci-button>
+    <vicci-button mat-dialog-close>Fechar</vicci-button>
+</mat-dialog-actions>

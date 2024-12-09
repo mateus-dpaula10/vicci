@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Criar plano</h2>
+<mat-dialog-content>
+    <form [formGroup]="formPlan">
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" type="text" id="name" placeholder="Insira o nome">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Preço</mat-label>
+            <input matInput formControlName="price" type="text" id="price" placeholder="Insira o preço">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Quantidade de dias</mat-label>
+            <input matInput formControlName="days" type="text" id="days" placeholder="Insira a quantidade de dias">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <vicci-button (click)="onSubmit()" accent>Salvar</vicci-button>
+    <vicci-button mat-dialog-close>Fechar</vicci-button>
+</mat-dialog-actions>

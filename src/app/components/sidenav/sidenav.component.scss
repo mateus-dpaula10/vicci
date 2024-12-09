@@ -1,0 +1,34 @@
+:host {
+    background-color: #000;
+    width: 180px;
+    color: #FFF;
+    padding: 2rem;
+
+    .img-helper {
+        height: 60px;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .sidenav-itens {
+        text-align: center;
+
+        .item {
+            text-decoration: none;
+            display: block;
+            height: 36px;
+            text-align: center;
+            border-bottom: 0.5px solid;
+            font-weight: 200;
+            color: #FFF;
+            margin-top: 20px;
+        }
+
+        .logout {
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+    }
+}

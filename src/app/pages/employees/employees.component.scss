@@ -1,0 +1,68 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 2rem;
+}
+
+vicci-button {
+    width: max-content;
+}
+
+table {
+    width: 100%;
+    max-width: 65rem;
+    min-width: unset;
+
+    tr.example-detail-row {
+        height: 0;
+    }
+
+    tr.example-element-row:not(.example-expanded-row):hover {
+        background: whitesmoke;
+        cursor: pointer;
+    }
+
+    tr.example-element-row:not(.example-expanded-row):active {
+        background: #efefef;
+    }
+
+    tr.noData {
+        td {
+            width: 100%;
+            text-align: center;
+            padding: 2rem;
+            color: rgba(0, 0, 0, 0.6);
+        }
+    }
+
+    .example-element-row td {
+        border-bottom-width: 0;
+    }
+
+    .element-detail {
+        overflow: hidden;
+        display: flex;
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            row-gap: 1rem;
+            column-gap: 0.5rem;
+            padding-bottom: 1rem;
+            justify-content: flex-end;
+            width: 100%;
+
+            .fields {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+
+                mat-form-field {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

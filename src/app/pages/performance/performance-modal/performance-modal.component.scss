@@ -1,0 +1,18 @@
+.main{
+    padding-top: 1rem;
+    h2, h1{
+        text-align: center;
+    }
+    
+    form {
+        width: 30rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        align-items: center;
+        gap: 1rem;
+    
+        mat-form-field{
+            width: 100%;
+        }
+    }
+}

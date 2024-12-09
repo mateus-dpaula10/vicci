@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "vicci-studio",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}

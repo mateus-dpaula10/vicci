@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Criar equipamento</h2>
+<mat-dialog-content>
+    <form [formGroup]="formEquipments">
+        <mat-form-field>
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" type="text" id="name" placeholder="Insira o nome">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Link do equipamento</mat-label>
+            <input matInput formControlName="link" type="text" id="link" placeholder="Insira o link">
+        </mat-form-field>
+
+        <mat-label>Foto do equipamento</mat-label>
+        <div class="file">
+            <label for="photo">
+                <span>Anexar arquivo</span>
+                <mat-icon fontIcon="file_upload"></mat-icon>
+            </label>
+            @if (imagePreview) {<img [src]="imagePreview" alt="Preview">}
+            <input type="File" (change)="onImageSelected($event.target)" id="photo">
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <vicci-button (click)="onSubmit()" accent> Salvar </vicci-button>
+    <vicci-button mat-dialog-close>Fechar</vicci-button>
+</mat-dialog-actions>

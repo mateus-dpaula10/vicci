@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Criar horário</h2>
+<mat-dialog-content>
+    <form [formGroup]="formSchedules">
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Aluno</mat-label>
+            <mat-select matNativeControl formControlName="student" name="student" placeholder="Selecione">
+                @for (student of students; track student) {
+                <mat-option [value]="student.name">{{ student.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-radio-group formControlName="listRole" color="primary">
+            <mat-radio-button [value]="listRole.ASSOCIATES">Associados</mat-radio-button>
+            <mat-radio-button [value]="listRole.CONTRACTORS">Contratados</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Professor(a)</mat-label>
+            <mat-select matNativeControl formControlName="teacher" name="teacher" placeholder="Selecione">
+                @for (teacher of teachers; track teacher) {
+                <mat-option [value]="teacher.name">{{ teacher.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Data</mat-label>
+            <input matInput formControlName="date" type="datetime-local" id="date" placeholder="Insira a função">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <vicci-button (click)="onSubmit()" accent>Salvar</vicci-button>
+    <vicci-button mat-dialog-close>Fechar</vicci-button>
+</mat-dialog-actions>

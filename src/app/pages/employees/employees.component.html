@@ -1,0 +1,106 @@
+<h1>Funcionários</h1>
+
+<vicci-button (click)="openDialog()" accent> Cadastrar funcionário </vicci-button>
+
+<table mat-table [dataSource]="employees$" multiTemplateDataRows class="mat-elevation-z8">
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Nome </th>
+    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="cpf">
+    <th mat-header-cell *matHeaderCellDef> CPF</th>
+    <td mat-cell *matCellDef="let element"> {{formatCpf(element.cpf)}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="functionEmployee">
+    <th mat-header-cell *matHeaderCellDef> Função </th>
+    <td mat-cell *matCellDef="let element"> {{element.functionEmployee}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="hiringDate">
+    <th mat-header-cell *matHeaderCellDef> Contratação </th>
+    <td mat-cell *matCellDef="let element"> {{formatDate(element.hiringDate)}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="unit">
+    <th mat-header-cell *matHeaderCellDef> Unidade </th>
+    <td mat-cell *matCellDef="let element"> {{element.unit}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button aria-label="expand row"
+        (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+        @if (expandedElement === element) {
+        <mat-icon>keyboard_arrow_up</mat-icon>
+        } @else {
+        <mat-icon>keyboard_arrow_down</mat-icon>
+        }
+      </button>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <form>
+          <div class="fields">
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Nome</mat-label>
+              <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
+                autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>CPF</mat-label>
+              <input matInput placeholder="CPF" #cpf="ngModel" [ngModel]="element.cpf" mask="000.000.000-00" name="cpf"
+                autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Função</mat-label>
+              <input matInput placeholder="Função" #functionEmployee="ngModel" [ngModel]="element.functionEmployee"
+                name="functionEmployee" autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Contratação</mat-label>
+              <input matInput placeholder="Data da Contratação" #hiringDate="ngModel" [ngModel]="element.hiringDate"
+                name="hiringDate" mask="00/00/0000" autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Unidade</mat-label>
+              <input matInput placeholder="Unidade que atua" #unit="ngModel" [ngModel]="element.unit" name="unit"
+                autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Status</mat-label>
+              <input matInput placeholder="Status" #status="ngModel" [ngModel]="element.status" name="status"
+                autocomplete="off">
+            </mat-form-field>
+          </div>
+          <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+          <vicci-button accent
+            (click)="onSubmit(element.id, name, cpf, functionEmployee, hiringDate, unit, status)">Salvar</vicci-button>
+        </form>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+    [class.example-expanded-row]="expandedElement === row"
+    (click)="expandedElement = expandedElement === row ? null : row">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  <tr class="mat-row noData" *matNoDataRow>
+    <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+      Tabela sem dados.
+    </td>
+  </tr>
+</table>

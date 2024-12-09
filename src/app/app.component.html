@@ -1,0 +1,11 @@
+@if (showInnerComponents) {
+    <app-sidenav />
+    <div class="main">
+        <router-outlet />
+    </div>  
+}
+@else {
+    <div class="main">
+        <router-outlet />
+    </div>
+}

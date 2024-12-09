@@ -1,0 +1,70 @@
+<h1>Professores contratados</h1>
+
+<vicci-button (click)="openDialog()" accent> Cadastrar professor contratado</vicci-button>
+
+<table mat-table [dataSource]="hired$" multiTemplateDataRows class="mat-elevation-z8">
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Nome </th>
+    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expertise">
+    <th mat-header-cell *matHeaderCellDef> Especialidade</th>
+    <td mat-cell *matCellDef="let element"> {{element.expertise}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="schedules">
+    <th mat-header-cell *matHeaderCellDef> Horario </th>
+    <td mat-cell *matCellDef="let element"> {{element.schedules}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button aria-label="expand row"
+        (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+        @if (expandedElement === element) {
+        <mat-icon>keyboard_arrow_up</mat-icon>
+        } @else {
+        <mat-icon>keyboard_arrow_down</mat-icon>
+        }
+      </button>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <form>
+          <div class="fields">
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Nome</mat-label>
+              <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
+                autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Especialidade</mat-label>
+              <input matInput placeholder="Especialidade" #expertise="ngModel" [ngModel]="element.expertise"
+                name="expertise" autocomplete="off">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Horario</mat-label>
+              <input matInput placeholder="Horario" #schedules="ngModel" [ngModel]="element.schedules" name="schedules"
+                autocomplete="off">
+            </mat-form-field>
+          </div>
+          <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+          <vicci-button accent (click)="onSubmit(element.id, name, expertise, schedules)">Salvar</vicci-button>
+        </form>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+    [class.example-expanded-row]="expandedElement === row"
+    (click)="expandedElement = expandedElement === row ? null : row">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>

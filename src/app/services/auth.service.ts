@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { User } from '../modelos/User';
 import { v4 as uuidv4 } from 'uuid';
 import { Observable } from 'rxjs';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,9 @@ export class AuthService {
       const userDoc = querySnapshot.docs[0]
       const userData = userDoc.data() as User
 
-      if (userData.password !== password) {
+      const isPasswordValid = await bcrypt.compare(password, userData.password)
+
+      if (!isPasswordValid) {
         this.snackbar.open("Senha incorreta!", 'Fechar', { duration: 3000 })
         return
       }
@@ -77,10 +80,12 @@ export class AuthService {
     try {
       const userId = uuidv4()
       const userDocRef = doc(this.firestore, `users/${userId}`)
+      const hashedPassword = await bcrypt.hash(password, 10)
+
       await setDoc(userDocRef, {
         id: userId,
         email,
-        password,
+        password: hashedPassword,
         status: 'Pendente',
         role: null,
         createdAt: new Date()

@@ -1,39 +1,44 @@
 <main>
     <div class="img-helper">
-        <img src="../../../assets/logo vicci branco.png">
+        <a routerLink="/dashboard">
+            <img src="../../../assets/logo vicci branco.png">
+        </a>
     </div>
     <nav class="sidenav-itens">
-        <a class="item" routerLink="/admin" *ngIf="user.role === 'Administrador'">
+        <a class="item" routerLink="/dashboard" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Instrutor' || user.role === 'Aluno' || user.role === 'Recepcionista'">
+            Dashboard
+        </a>
+        <a class="item" routerLink="/admin" *ngIf="user.role === 'Gerente' || user.role === 'Administrador'">
             Administração
         </a>
-        <a class="item" routerLink="/teachers" *ngIf="user.role === 'Administrador' || user.role === 'Recepcionista'">
+        <a class="item" routerLink="/teachers" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Recepcionista'">
             Professores
         </a>
-        <a class="item" routerLink="/equipments" *ngIf="user.role === 'Administrador' || user.role === 'Instrutor' || user.role === 'Aluno'">
+        <a class="item" routerLink="/equipments" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Instrutor' || user.role === 'Aluno'">
             Equipamentos
         </a>
-        <a class="item" routerLink="/units" *ngIf="user.role === 'Administrador' || user.role === 'Recepcionista'">
+        <a class="item" routerLink="/units" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Recepcionista'">
             Unidades
         </a>
-        <a class="item" routerLink="/plans" *ngIf="user.role === 'Administrador' || user.role === 'Recepcionista'">
+        <a class="item" routerLink="/plans" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Recepcionista'">
             Planos
         </a>
-        <a class="item" routerLink="/register" *ngIf="user.role === 'Administrador' || user.role === 'Recepcionista'">
+        <a class="item" routerLink="/register" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Recepcionista'">
             Alunos
         </a>
-        <a class="item" routerLink="/calendar" *ngIf="user.role === 'Administrador' || user.role === 'Aluno'">
+        <a class="item" routerLink="/calendar" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Aluno'">
             Calendário
         </a>
-        <a class="item" routerLink="/restaurant" *ngIf="user.role === 'Administrador'">
+        <a class="item" routerLink="/restaurant" *ngIf="user.role === 'Gerente' || user.role === 'Administrador'">
             Restaurante
         </a>
-        <a class="item" routerLink="/employees" *ngIf="user.role === 'Administrador' || user.role === 'Recepcionista'">
+        <a class="item" routerLink="/employees" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Recepcionista'">
             Funcionários
         </a>
-        <a class="item" routerLink="/performance" *ngIf="user.role === 'Administrador' || user.role === 'Instrutor'">
+        <a class="item" routerLink="/performance" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Instrutor'">
             Desempenho
         </a>
-        <a class="item" routerLink="/training" *ngIf="user.role === 'Administrador' || user.role === 'Instrutor'">
+        <a class="item" routerLink="/training" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Instrutor'">
             Treinos
         </a>
         <mat-icon aria-hidden="false" aria-label="logout" fontIcon="logout" (click)="onLogout()" class="logout">Sair</mat-icon>

@@ -1,14 +1,14 @@
 :host {
     background-color: #000;
-    width: 180px;
+    width: max-content;
     color: #FFF;
     padding: 2rem;
 
     .img-helper {
-        height: 60px;
-
         img {
-            width: 100%;
+            max-width: 8rem;
+            display: block;
+            margin: 0 auto 4rem;
         }
     }
 

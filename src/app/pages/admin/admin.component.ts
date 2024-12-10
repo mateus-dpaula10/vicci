@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { ButtonComponent } from '../../components/utils/button/button.component';
+import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-admin',
@@ -21,7 +22,7 @@ import { ButtonComponent } from '../../components/utils/button/button.component'
     ]),
   ],
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatTableModule, MatInputModule, FormsModule, MatButtonModule, ButtonComponent],
+  imports: [CommonModule, MatIconModule, MatTableModule, MatInputModule, FormsModule, MatButtonModule, ButtonComponent, MatSelect, MatOption],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -36,6 +37,8 @@ export class AdminComponent {
 
   pendingUsers: any[] = []
   approvedUsers: any[] = []  
+  roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
+  status_: string[] = ['Pendente', 'Aprovado']
 
   // usuarios$ = this.usersAll.fetchUsers
 

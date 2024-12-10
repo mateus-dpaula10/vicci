@@ -1,17 +1,18 @@
-<mat-list>
-    <h3>Usuários pendentes</h3>
+<mat-list *ngIf="pendingUsers.length > 0">
+  <h3>Usuários pendentes</h3>
 
-    <mat-list-item *ngFor="let user of pendingUsers">
-        <div mat-line>{{ user.email }}</div>
-        <div mat-line>Status: {{ user.status }}</div>
-        <mat-divider></mat-divider>
+  <mat-list-item *ngFor="let user of pendingUsers">
+    <div mat-line>{{ user.email }}</div>
+    <div mat-line>Status: {{ user.status }}</div>
+    <mat-divider></mat-divider>
 
-        <div class="actions-buttons">
-            <button mat-raised-button color="primary" (click)="approveUser(user.id, 'Aluno')">Aprovar como aluno</button>
-            <button mat-raised-button color="accent" (click)="approveUser(user.id, 'Recepcionista')">Aprovar como colaborador da recepção</button>
-            <button mat-raised-button color="warn" (click)="approveUser(user.id, 'Instrutor')">Aprovar como instrutor</button>
-        </div>
-    </mat-list-item>
+    <div class="actions-buttons">
+        <button mat-raised-button color="primary" (click)="approveUser(user.id, 'Aluno')">Aprovar como aluno</button>
+        <button mat-raised-button color="accent" (click)="approveUser(user.id, 'Recepcionista')">Aprovar como colaborador da recepção</button>
+        <button mat-raised-button color="warn" (click)="approveUser(user.id, 'Instrutor')">Aprovar como instrutor</button>
+        <button mat-raised-button color="primary" (click)="approveUser(user.id, 'Gerente')">Aprovar como gerente</button>
+    </div>
+  </mat-list-item>
 </mat-list>
 
 <ul>
@@ -72,13 +73,19 @@
                 </mat-form-field>
                 <mat-form-field subscriptSizing="dynamic">
                   <mat-label>Função</mat-label>
-                  <input matInput placeholder="Função" #role="ngModel" [ngModel]="element.role" name="role"
-                    autocomplete="off">
+                  <mat-select #role="ngModel" [ngModel]="element.role" name="role">
+                    <mat-option *ngFor="let role of roles" [value]="role">
+                      {{ role }}
+                    </mat-option>
+                  </mat-select>
                 </mat-form-field>
                 <mat-form-field subscriptSizing="dynamic">
                   <mat-label>Status</mat-label>
-                  <input matInput placeholder="Status" #status="ngModel" [ngModel]="element.status" name="status"
-                    autocomplete="off">
+                  <mat-select #status="ngModel" [ngModel]="element.status" name="status">
+                    <mat-option *ngFor="let item of status_" [value]="item">
+                      {{ item }}
+                    </mat-option>
+                  </mat-select>
                 </mat-form-field>
               </div>
               <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>

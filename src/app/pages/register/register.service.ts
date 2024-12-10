@@ -23,6 +23,7 @@ import { Observable } from 'rxjs';
 export class RegisterService {
   private firestore: Firestore = inject(Firestore);
   studentsCollection = collection(this.firestore, 'students');
+  usersAll = collection(this.firestore, 'users')
 
   get students() {
     return collectionData(this.studentsCollection, { idField: 'id', }) as Observable<any[]>;
@@ -72,7 +73,13 @@ export class RegisterService {
   }
 
   async update(id: any, payload: any, file?: any, pdf?: any | undefined) {
-    const studentRef = doc(this.studentsCollection, id);
+    const studentRef = doc(this.usersAll, id)
+
+    if (!pdf) {
+      delete payload.pdf
+    }
+
+    if (!file)
 
     if (!file && !pdf) {
       return updateDoc(studentRef, payload);
@@ -88,10 +95,13 @@ export class RegisterService {
         const snapshot = await uploadBytes(storageRef, file);
 
         if (snapshot) {
-          imageUrl = await getDownloadURL(storageRef);
-          const studentImageRef = ref(storage, payload.photo);
-          payload.photo = imageUrl;
-          await deleteObject(studentImageRef);
+          imageUrl = await getDownloadURL(storageRef)
+
+          if (payload.photo) {
+            const studentImageRef = ref(storage, payload.photo)
+            await deleteObject(studentImageRef)
+          }
+          payload.photo = imageUrl
         }
       }
 
@@ -105,10 +115,13 @@ export class RegisterService {
         const snapshotPdf = await uploadBytes(storageRefPdf, pdf);
 
         if (snapshotPdf) {
-          pdfUrl = await getDownloadURL(storageRefPdf);
-          const pdfRef = ref(storage, payload.pdf);
-          payload.pdf = pdfUrl;
-          await deleteObject(pdfRef);
+          pdfUrl = await getDownloadURL(storageRefPdf)
+
+          if (payload.pdf) {
+            const pdfRef = ref(storage, payload.pdf)
+            await deleteObject(pdfRef)
+          }
+          payload.pdf = pdfUrl
         }
       }
       return updateDoc(studentRef, payload);
@@ -116,7 +129,7 @@ export class RegisterService {
   }
 
   delete(id: any, file?: any, pdf?: any) {
-    const studentRef = doc(this.studentsCollection, id);
+    const studentRef = doc(this.usersAll, id);
     const storage = getStorage();
 
     if (!file && !pdf) {

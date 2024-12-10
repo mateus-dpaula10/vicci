@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +12,9 @@ import { RegisterService } from './register.service';
 import { RegisterModalComponent } from './register-modal/register-modal.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { AuthService } from '../../services/auth.service';
+import { map, Observable } from 'rxjs';
+import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +26,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     ]),
   ],
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, ButtonComponent, MatIconModule, MatInputModule, FormsModule, AsyncPipe, NgxMaskDirective],
+  imports: [MatButtonModule, MatTableModule, ButtonComponent, MatIconModule, MatInputModule, FormsModule, AsyncPipe, NgxMaskDirective, CommonModule, MatSelect, MatOption],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
   providers: [provideNgxMask({ /* opções de cfg */ })]
@@ -32,37 +35,43 @@ export class RegisterComponent {
 
   private dialog = inject(MatDialog);
   private studentService = inject(RegisterService);
+  private allStudents = inject(AuthService);
   private snackbar = inject(MatSnackBar);
   imagePreview: any;
   file: any;
   pdf: any;
 
-  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'pdf', 'photo'];
+  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'pdf', 'photo', 'role'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
 
-  students$ = this.studentService.students;
+  // students$ = this.studentService.students;
+  students$: Observable<any[]> = this.allStudents.fetchUsers
+  studentsFiltered$: Observable<any[]> = this.students$.pipe(
+    map(items => items.filter(item => item.role === 'Aluno'))
+  )  
+  roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
 
   openDialog() {
     const dialogRef = this.dialog.open(RegisterModalComponent)
   }
 
-  onSubmit(id: any, name: any, email: any, phoneNumber: any, cpf: any, birthDate: any, pdf?: any, photo?: any) {
+  onSubmit(id: any, name: any, email: any, phoneNumber: any, cpf: any, birthDate: any, pdf?: any, photo?: any, role?: any) {
     this.studentService.update(id, {
       name: name.value,
       email: email.value,
       phoneNumber: phoneNumber.value,
       cpf: cpf.value,
       birthDate: birthDate.value,
-      // pdf: pdf,
-      // photo: photo
+      pdf: pdf,
+      photo: photo,
+      role: role.value
     }, this.file, this.pdf)
       .then(() => this.snackbar.open("Aluno atualizado", ))
       .catch((error) => {
         this.snackbar.open("Erro ao atualizar", )
-        console.log(error.message);
-        
+        console.log(error.message);        
       });
   }
 

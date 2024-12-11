@@ -31,7 +31,6 @@ export class RegisterService {
 
   async create(payload: any, file?: File, pdf?: File) {
     if (!file && !pdf) {
-
       return addDoc(this.studentsCollection, payload);
     } else {
       const storage = getStorage();
@@ -79,53 +78,44 @@ export class RegisterService {
       delete payload.pdf
     }
 
-    if (!file)
-
     if (!file && !pdf) {
       return updateDoc(studentRef, payload);
-    } else {
-      const storage = getStorage();
-      let imageUrl: string | undefined;
-      let pdfUrl: string | undefined;
+    } 
 
+    try {
       if (file) {
-        const dotIndex = file.name.lastIndexOf('.');
-        const ext = file.name.slice(dotIndex, file.name.length);
-        const storageRef = ref(storage, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-        const snapshot = await uploadBytes(storageRef, file);
-
-        if (snapshot) {
-          imageUrl = await getDownloadURL(storageRef)
-
-          if (payload.photo) {
-            const studentImageRef = ref(storage, payload.photo)
-            await deleteObject(studentImageRef)
-          }
-          payload.photo = imageUrl
-        }
+        payload.photo = await this.uploadFile(file, payload.file)
       }
-
       if (pdf) {
-        const dotIndexPdf = pdf.name.lastIndexOf('.');
-        const extPdf = pdf.name.slice(dotIndexPdf, pdf.name.length);
-        const storageRefPdf = ref(
-          storage,
-          `${Date.now()}-${Math.round(Math.random() * 1e9)}${extPdf}`
-        );
-        const snapshotPdf = await uploadBytes(storageRefPdf, pdf);
-
-        if (snapshotPdf) {
-          pdfUrl = await getDownloadURL(storageRefPdf)
-
-          if (payload.pdf) {
-            const pdfRef = ref(storage, payload.pdf)
-            await deleteObject(pdfRef)
-          }
-          payload.pdf = pdfUrl
-        }
+        payload.pdf = await this.uploadFile(file, payload.pdf)
       }
-      return updateDoc(studentRef, payload);
+      return updateDoc(studentRef, payload)
+    } catch (error) {
+      console.error("Erro ao realizar upload:", error)
+      throw error
     }
+  }
+
+  private async uploadFile(file: any, existingPath?: string): Promise<string> {
+    const storage = getStorage()
+    const dotIndex = file.name.lastIndexOf('.')
+    const ext = file.name.slice(dotIndex)
+    const storageRef = ref(storage, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`)
+
+    const snapshot = await uploadBytes(storageRef, file)
+
+    if (!snapshot) {
+      throw new Error("Erro ao realizar upload do arquivo.")
+    }
+
+    const fileUrl = await getDownloadURL(storageRef)
+
+    if (existingPath) {
+      const existingRef = ref(storage, existingPath)
+      await deleteObject(existingRef).catch((err) => console.warn("Erro ao deletar arquivo anterior:", err))
+    }
+
+    return fileUrl
   }
 
   delete(id: any, file?: any, pdf?: any) {

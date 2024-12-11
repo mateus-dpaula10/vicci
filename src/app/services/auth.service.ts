@@ -78,6 +78,15 @@ export class AuthService {
 
   async registerUser(email: string, password: string) {
     try {
+      const usersRef = collection(this.firestore, 'users')
+      const emailQuey = query(usersRef, where('email', '==', email))
+      const emailSnapshot = await getDocs(emailQuey)
+
+      if (!emailSnapshot.empty) {
+        this.snackbar.open("E-mail já cadastrado! Tente usar outro e-mail.", 'Fechar', { duration: 3000 })
+        return
+      }
+
       const userId = uuidv4()
       const userDocRef = doc(this.firestore, `users/${userId}`)
       const hashedPassword = await bcrypt.hash(password, 10)

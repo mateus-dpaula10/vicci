@@ -10,11 +10,13 @@ import { ButtonComponent } from '../../../components/utils/button/button.compone
 import { MatRadioModule } from '@angular/material/radio';
 import { HiredService } from '../../teachers/hired/hired.service';
 import { AssociateService } from '../../teachers/associate/associate.service';
-import { RegisterService } from '../../register/register.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SchedulesService } from '../schedules.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ISchedule } from '../models/schedule.interface';
+import { map, Observable } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 
 enum ListRole {
@@ -25,7 +27,7 @@ enum ListRole {
 @Component({
   selector: 'app-schedule-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, MatInputModule, MatButtonModule, MatDialogModule, ButtonComponent, MatSelectModule, NgxMaskDirective, MatRadioModule, FormsModule, MatAutocompleteModule],
+  imports: [ReactiveFormsModule, MatInputModule, MatButtonModule, MatDialogModule, ButtonComponent, MatSelectModule, NgxMaskDirective, MatRadioModule, FormsModule, MatAutocompleteModule, CommonModule],
   templateUrl: './schedule-modal.component.html',
   styleUrl: './schedule-modal.component.scss'
 })
@@ -34,7 +36,7 @@ export class ScheduleModalComponent {
   private fb = inject(FormBuilder);
   private hiredService = inject(HiredService);
   private associateService = inject(AssociateService);
-  private studentService = inject(RegisterService);
+  private allStudents = inject(AuthService);
   private schedulesService = inject(SchedulesService);
   private snackbar = inject(MatSnackBar)
 
@@ -51,17 +53,16 @@ export class ScheduleModalComponent {
     public dialogRef: MatDialogRef<ScheduleModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ISchedule[]
   ) { }
-
-  students: any
+  
+  students$: Observable<any[]> = this.allStudents.fetchUsers
+  studentsFiltered$: Observable<any[]> = this.students$.pipe(
+    map(items => items.filter(item => item.role === 'Aluno'))
+  )
   schedulesTeacherDate: any
 
   async ngOnInit(): Promise<void> {
-    this.setSubscriber();
-    this.setAssociatedTeachers();
-    this.studentService.students.subscribe((res) => {
-      this.students = res
-    })
-
+    this.setSubscriber()
+    this.setAssociatedTeachers()
   }
 
   setSubscriber(): void {

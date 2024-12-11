@@ -37,6 +37,7 @@ export class RegisterComponent {
   private studentService = inject(RegisterService);
   private allStudents = inject(AuthService);
   private snackbar = inject(MatSnackBar);
+
   imagePreview: any;
   file: any;
   pdf: any;

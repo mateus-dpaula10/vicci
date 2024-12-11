@@ -16,12 +16,15 @@ import {
   deleteObject,
 } from 'firebase/storage';
 import { Observable } from 'rxjs';
+import * as bcrypt from 'bcryptjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegisterService {
   private firestore: Firestore = inject(Firestore);
+  private snackbar = inject(MatSnackBar);
   studentsCollection = collection(this.firestore, 'students');
   usersAll = collection(this.firestore, 'users')
 
@@ -74,24 +77,29 @@ export class RegisterService {
   async update(id: any, payload: any, file?: any, pdf?: any | undefined) {
     const studentRef = doc(this.usersAll, id)
 
-    if (!pdf) {
-      delete payload.pdf
-    }
-
-    if (!file && !pdf) {
-      return updateDoc(studentRef, payload);
-    } 
-
     try {
+      if (payload.password) {       
+        if (payload.password.length < 6)  {
+          throw new Error("A senha precisa conter pelo menos 6 caracteres.")
+        } 
+        payload.password = await bcrypt.hash(payload.password, 10)
+      }
+
+      if (!pdf) {
+        delete payload.pdf
+      }
+
       if (file) {
         payload.photo = await this.uploadFile(file, payload.file)
       }
+
       if (pdf) {
         payload.pdf = await this.uploadFile(file, payload.pdf)
       }
-      return updateDoc(studentRef, payload)
+
+      await updateDoc(studentRef, payload)
     } catch (error) {
-      console.error("Erro ao realizar upload:", error)
+      console.error("Erro ao atualizar upload:", error)
       throw error
     }
   }

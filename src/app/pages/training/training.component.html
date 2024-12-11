@@ -4,9 +4,9 @@
     <form [formGroup]="formSelectStudent">
       <mat-form-field appearance="outline">
         <mat-select matNativeControl formControlName="student" name="student" placeholder="Selecione">
-          @for (student of students; track student) {
-          <mat-option [value]="student.id">{{ student.name }}</mat-option>
-          }
+          <mat-option [value]="student.id" *ngFor="let student of studentsFiltered | async">
+            {{ student.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </form>
@@ -15,48 +15,46 @@
 </div>
 <div class="infoDiv">
   @if(studentInfo){
-  <div class="studentInfo">
+    <div class="studentInfo">
+      @if(!studentInfo[0].photo){
+      <img src="../../../assets/images/noPhoto.png" class="studentPhoto" />
+      } @else {
+      <img src="{{ studentInfo[0].photo }}" class="studentPhoto" />
+      }
+      <h2>{{studentInfo[0].name}}</h2>
+    </div>
+    <div class="training">
+      <div class="trainingItems">
+        <div class="items addItem" (click)="openDialog()">
+          <div class="add">
+            <img src="../../../assets/images/plus.png">
+            <p>Adicionar treino</p>
+          </div>
+        </div>
 
-    @if(!studentInfo[0].photo){
-    <img src="../../../assets/images/noPhoto.png" class="studentPhoto" />
-    } @else {
-    <img src="{{ studentInfo[0].photo }}" class="studentPhoto" />
-    }
-    <h2>{{studentInfo[0].name}}</h2>
-  </div>
-  <div class="training">
-    <div class="trainingItems">
-      <div class="items addItem" (click)="openDialog()">
-        <div class="add">
-          <img src="../../../assets/images/plus.png">
-          <p>Adicionar treino</p>
+        @for (trainings of studentTraining; track trainings) {
+        <div class="items trainingInfo" (click)="onDelete(trainings.id)">
+          <h3>{{trainings.name}}</h3>
+          <hr />
+          @for(training of trainings.exercises; track training) {
+          <div class="line">
+            <p>Equipamento: </p> <span class="textTraining">{{training.equipment}}</span>
+          </div>
+          <div class="line">
+            <p>Repetições: </p> <span class="textTraining">{{training.reps}}</span>
+          </div>
+          <div class="line">
+            <p>Séries: </p> <span class="textTraining">{{training.sets}}</span>
+          </div>
+          <br>
+          }
         </div>
-      </div>
-
-      @for (trainings of studentTraining; track trainings) {
-      <div class="items trainingInfo" (click)="onDelete(trainings.id)">
-        <h3>{{trainings.name}}</h3>
-        <hr />
-        @for(training of trainings.exercises; track training) {
-        <div class="line">
-          <p>Equipamento: </p> <span class="textTraining">{{training.equipment}}</span>
-        </div>
-        <div class="line">
-          <p>Repetições: </p> <span class="textTraining">{{training.reps}}</span>
-        </div>
-        <div class="line">
-          <p>Séries: </p> <span class="textTraining">{{training.sets}}</span>
-        </div>
-        <br>
         }
       </div>
-      }
     </div>
-  </div>
-
   } @else {
-  <div class="noInfo">
-    <p>Selecione o aluno para ver os treinos</p>
-  </div>
+    <div class="noInfo">
+      <p>Selecione o aluno para ver os treinos</p>
+    </div>
   }
 </div>

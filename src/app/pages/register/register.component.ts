@@ -32,7 +32,6 @@ import { MatOption, MatSelect } from '@angular/material/select';
   providers: [provideNgxMask({ /* opções de cfg */ })]
 })
 export class RegisterComponent {
-
   private dialog = inject(MatDialog);
   private studentService = inject(RegisterService);
   private allStudents = inject(AuthService);
@@ -42,7 +41,7 @@ export class RegisterComponent {
   file: any;
   pdf: any;
 
-  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'pdf', 'photo', 'role'];
+  displayedColumns: string[] = ['name', 'email', 'password', 'phoneNumber', 'cpf', 'birthDate', 'pdf', 'photo', 'role'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
@@ -58,10 +57,11 @@ export class RegisterComponent {
     const dialogRef = this.dialog.open(RegisterModalComponent)
   }
 
-  onSubmit(id: any, name: any, email: any, phoneNumber: any, cpf: any, birthDate: any, pdf?: any, photo?: any, role?: any) {
+  onSubmit(id: any, name: any, email: any, password: any, phoneNumber: any, cpf: any, birthDate: any, pdf?: any, photo?: any, role?: any) {
     this.studentService.update(id, {
       name: name.value,
       email: email.value,
+      password: password.value,
       phoneNumber: phoneNumber.value,
       cpf: cpf.value,
       birthDate: birthDate.value,
@@ -69,9 +69,11 @@ export class RegisterComponent {
       photo: photo,
       role: role.value
     }, this.file, this.pdf)
-      .then(() => this.snackbar.open("Aluno atualizado", ))
+      .then(() => {
+        this.snackbar.open("Aluno atualizado com sucesso!", 'Fechar', { duration: 3000 })
+      })
       .catch((error) => {
-        this.snackbar.open("Erro ao atualizar", )
+        this.snackbar.open(error.message, 'Fechar', { duration: 3000 })
         console.log(error.message);        
       });
   }

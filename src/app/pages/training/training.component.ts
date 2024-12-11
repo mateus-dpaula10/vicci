@@ -8,11 +8,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TrainingService } from './training.service';
 import { TrainingModalComponent } from './training-modal/training-modal.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-training',
   standalone: true,
-  imports: [MatFormField, MatSelect, ButtonComponent, MatOption, ReactiveFormsModule],
+  imports: [MatFormField, MatSelect, ButtonComponent, MatOption, ReactiveFormsModule, CommonModule],
   templateUrl: './training.component.html',
   styleUrl: './training.component.scss'
 })
@@ -22,16 +25,20 @@ export class TrainingComponent {
   private fb = inject(FormBuilder);
   private snackbar = inject(MatSnackBar);
   private studentsService = inject(RegisterService);
+  private allStudents = inject(AuthService);
   private trainingService = inject(TrainingService)
 
-  students: any;
+  students: Observable<any[]> = this.allStudents.fetchUsers
+  studentsFiltered: Observable<any[]> = this.students.pipe(
+    map(items => items.filter(item => item.role === 'Aluno'))
+  )
   studentInfo: any;
 
   training: any
   studentTraining: any;
 
   ngOnInit() {
-    this.studentsService.students.subscribe((res) => this.students = res)
+    // this.studentsService.students.subscribe((res) => this.students = res)
     this.trainingService.trainings.subscribe((res) => this.training = res)
   }
 
@@ -39,14 +46,17 @@ export class TrainingComponent {
     student: []
   })
 
-
   findStudent() {
     const payload = this.formSelectStudent.value
     if (!payload.student) {
       this.snackbar.open("Selecione um aluno")
       return;
     }
-    this.studentInfo = this.students.filter((info: any) => info.id === payload.student)
+    this.studentInfo = this.studentsFiltered.pipe(
+      map(items => items.filter((info: any) => info.id === payload.student))
+    ).subscribe(studentFiltered => {
+      this.studentInfo = studentFiltered
+    })
     this.findStudentTraining()
   }
 

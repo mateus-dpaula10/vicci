@@ -41,7 +41,7 @@ export class RegisterComponent {
   file: any;
   pdf: any;
 
-  displayedColumns: string[] = ['name', 'email', 'password', 'phoneNumber', 'cpf', 'birthDate', 'pdf', 'photo', 'role'];
+  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'role'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
@@ -52,12 +52,27 @@ export class RegisterComponent {
     map(items => items.filter(item => item.role === 'Aluno'))
   )  
   roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
+  sizes: string[] = ['P', 'M', 'G', 'GG', 'XG']
 
   openDialog() {
     const dialogRef = this.dialog.open(RegisterModalComponent)
   }
 
-  onSubmit(id: any, name: any, email: any, password: any, phoneNumber: any, cpf: any, birthDate: any, pdf?: any, photo?: any, role?: any) {
+  onSubmit(
+    id: any, 
+    name: any, 
+    email: any, 
+    password: any, 
+    phoneNumber: any, 
+    cpf: any, 
+    birthDate: any, 
+    pdf?: any, 
+    photo?: any, 
+    role?: any, 
+    shirtSize?: any, 
+    pantsSize?: any,
+    shortsSize?: any,
+    shoeSize?: any) {
     this.studentService.update(id, {
       name: name.value,
       email: email.value,
@@ -67,7 +82,11 @@ export class RegisterComponent {
       birthDate: birthDate.value,
       pdf: pdf,
       photo: photo,
-      role: role.value
+      role: role.value,
+      shirtSize: shirtSize.value,
+      pantsSize: pantsSize.value,
+      shortsSize: shortsSize.value,
+      shoeSize: shoeSize.value
     }, this.file, this.pdf)
       .then(() => {
         this.snackbar.open("Aluno atualizado com sucesso!", 'Fechar', { duration: 3000 })

@@ -1,0 +1,35 @@
+<h1>Feedback alunos</h1>
+
+<div class="table-container">
+    <form [formGroup]="feedbackForm">
+        <mat-form-field appearance="fill">
+            <mat-label>Selecione um aluno</mat-label>
+            <mat-select id="student" formControlName="student">
+                <mat-option *ngFor="let student of (studentsFiltered | async)" [value]="student.name">
+                    {{ student.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Avaliação (1 a 5)</mat-label>
+            <mat-select id="rating" formControlName="rating">
+                <mat-option *ngFor="let rating of ratings" [value]="rating">
+                    {{ rating }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Comentário adicional</mat-label>
+            <textarea
+                matInput
+                rows="4"
+                formControlName="comment"
+                placeholder="Digite o comentário"
+            ></textarea>
+        </mat-form-field>
+        
+        <vicci-button accent (click)="onSubmit()"> Registrar</vicci-button>
+    </form>
+</div>

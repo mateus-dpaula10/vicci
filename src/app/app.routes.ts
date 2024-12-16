@@ -14,6 +14,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/dashboard/dashboard.component').then(mod => mod.DashboardComponent)
     },
     {
+        path: 'feedback',
+        canActivate: [authGuard],
+        data: { roles: ['Gerente', 'Administrador', 'Instrutor', 'Aluno', 'Recepcionista'] },
+        loadComponent: () => import('./pages/feedback/feedback.component').then(mod => mod.FeedbackComponent)
+    },
+    {
         path: 'admin',
         canActivate: [authGuard],
         data: { roles: ['Gerente', 'Administrador'] },

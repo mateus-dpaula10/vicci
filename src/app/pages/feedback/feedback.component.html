@@ -1,35 +1,89 @@
 <h1>Feedback alunos</h1>
 
-<div class="table-container">
-    <form [formGroup]="feedbackForm">
-        <mat-form-field appearance="fill">
-            <mat-label>Selecione um aluno</mat-label>
-            <mat-select id="student" formControlName="student">
-                <mat-option *ngFor="let student of (studentsFiltered | async)" [value]="student.name">
-                    {{ student.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+<vicci-button (click)="openDialog()" accent> Registrar feedback </vicci-button>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Avaliação (1 a 5)</mat-label>
-            <mat-select id="rating" formControlName="rating">
-                <mat-option *ngFor="let rating of ratings" [value]="rating">
-                    {{ rating }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+<table mat-table [dataSource]="feedbacks$" multiTemplateDataRows class="mat-elevation-z8">
+    <ng-container matColumnDef="student">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let element"> {{element.student}} </td>
+    </ng-container>
+    <ng-container matColumnDef="rating_appliances">
+        <th mat-header-cell *matHeaderCellDef> Avaliação aparelhos </th>
+        <td mat-cell *matCellDef="let element"> {{element.rating_appliances}} </td>
+    </ng-container>
+    <ng-container matColumnDef="rating_cleaning">
+        <th mat-header-cell *matHeaderCellDef> Avaliação limpeza </th>
+        <td mat-cell *matCellDef="let element"> {{element.rating_cleaning}} </td>
+    </ng-container>
+    <ng-container matColumnDef="rating_recommendation">
+        <th mat-header-cell *matHeaderCellDef> Avaliação recomendação </th>
+        <td mat-cell *matCellDef="let element"> {{element.rating_recommendation}} </td>
+    </ng-container>
+    <ng-container matColumnDef="rating_service">
+        <th mat-header-cell *matHeaderCellDef> Avaliação atendimento </th>
+        <td mat-cell *matCellDef="let element"> {{element.rating_service}} </td>
+    </ng-container>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Comentário adicional</mat-label>
-            <textarea
-                matInput
-                rows="4"
-                formControlName="comment"
-                placeholder="Digite o comentário"
-            ></textarea>
-        </mat-form-field>
-        
-        <vicci-button accent (click)="onSubmit()"> Registrar</vicci-button>
-    </form>
-</div>
+    <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="expand row"
+            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+            @if (expandedElement === element) {
+            <mat-icon>keyboard_arrow_up</mat-icon>
+            } @else {
+            <mat-icon>keyboard_arrow_down</mat-icon>
+            }
+          </button>
+        </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+            <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <form>
+                    <div class="fields">
+                        <mat-form-field subscriptSizing="dynamic">
+                            <mat-label>Nome</mat-label>
+                            <input matInput placeholder="Nome" #student="ngModel" [ngModel]="element.student" name="student"
+                            autocomplete="off">
+                        </mat-form-field>
+                        <mat-form-field subscriptSizing="dynamic">
+                            <mat-label>Avaliação aparelhos</mat-label>
+                            <input matInput placeholder="Avaliação aparelhos" #rating_appliances="ngModel" [ngModel]="element.rating_appliances" name="rating_appliances"
+                            autocomplete="off" type="number" min="0" max="10">
+                        </mat-form-field>
+                        <mat-form-field subscriptSizing="dynamic">
+                            <mat-label>Avaliação limpeza</mat-label>
+                            <input matInput placeholder="Avaliação limpeza" #rating_cleaning="ngModel" [ngModel]="element.rating_cleaning" name="rating_cleaning"
+                            autocomplete="off" type="number" min="0" max="10">
+                        </mat-form-field>
+                        <mat-form-field subscriptSizing="dynamic">
+                            <mat-label>Avaliação recomendação</mat-label>
+                            <input matInput placeholder="Avaliação recomendação" #rating_recommendation="ngModel" [ngModel]="element.rating_recommendation" name="rating_recommendation"
+                            autocomplete="off" type="number" min="0" max="10">
+                        </mat-form-field>
+                        <mat-form-field subscriptSizing="dynamic">
+                            <mat-label>Avaliação atendimento</mat-label>
+                            <input matInput placeholder="Avaliação atendimento" #rating_service="ngModel" [ngModel]="element.rating_service" name="rating_service"
+                            autocomplete="off" type="number" min="0" max="10">
+                        </mat-form-field>
+                        <mat-form-field subscriptSizing="dynamic">
+                            <mat-label>Comentário</mat-label>
+                            <textarea matInput placeholder="Avaliação atendimento" #comment="ngModel" [ngModel]="element.comment" name="comment"></textarea>
+                        </mat-form-field>
+                    </div>
+                    <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+                    <vicci-button accent (click)="onSubmit(element.id, student, rating_appliances, rating_cleaning, rating_recommendation, rating_service, comment)">Salvar</vicci-button>
+                </form>
+            </div>
+        </td>
+    </ng-container>
+    
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+        [class.example-expanded-row]="expandedElement === row"
+        (click)="expandedElement = expandedElement === row ? null : row">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>

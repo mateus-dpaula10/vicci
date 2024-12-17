@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>Criar feedback</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="feedbackForm">
+        <mat-form-field appearance="fill">
+            <mat-label>Selecione um aluno</mat-label>
+            <mat-select id="student" formControlName="student">
+                <mat-option *ngFor="let student of (studentsFiltered | async)" [value]="student.name">
+                    {{ student.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Avaliação aparelhos (0 a 10)</mat-label>
+            <mat-select id="rating_appliances" formControlName="rating_appliances">
+                <mat-option *ngFor="let rating of ratings" [value]="rating">
+                    {{ rating }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Avaliação limpeza (0 a 10)</mat-label>
+            <mat-select id="rating_cleaning" formControlName="rating_cleaning">
+                <mat-option *ngFor="let rating of ratings" [value]="rating">
+                    {{ rating }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Avaliação atendimento (0 a 10)</mat-label>
+            <mat-select id="rating_service" formControlName="rating_service">
+                <mat-option *ngFor="let rating of ratings" [value]="rating">
+                    {{ rating }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Recomendação para outros (0 a 10)</mat-label>
+            <mat-select id="rating_recommendation" formControlName="rating_recommendation">
+                <mat-option *ngFor="let rating of ratings" [value]="rating">
+                    {{ rating }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Comentário adicional (sugestão, crítica ou apontamentos)</mat-label>
+            <textarea
+                matInput
+                rows="4"
+                formControlName="comment"
+                placeholder="Digite o comentário"
+            ></textarea>
+        </mat-form-field>
+        
+        <vicci-button accent (click)="onSubmit()"> Registrar</vicci-button>
+    </form>
+</mat-dialog-content>

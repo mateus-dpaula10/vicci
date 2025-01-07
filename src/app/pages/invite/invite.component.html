@@ -1,0 +1,140 @@
+<h1>Indicação</h1>
+
+<div *ngIf="user.role === 'Aluno'" class="form_student">
+    <form [formGroup]="inviteForm">
+        <mat-form-field>
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" placeholder="Nome da indicação">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>E-mail</mat-label>
+            <input matInput formControlName="email" placeholder="E-mail da indicação">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Celular</mat-label>
+            <input matInput formControlName="cellphone" placeholder="Celular da indicação" mask="(00)00000-0000">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Data</mat-label>
+            <input matInput formControlName="date" [matDatepicker]="picker" placeholder="Data de preferência de visita da indicação">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <vicci-button (click)="sendInvite()" accent>Enviar convite</vicci-button>
+    </form>
+</div>
+
+<div *ngIf="user.role === 'Administrador' || user.role === 'Gerente'">
+    <div class="table-container">
+        <table mat-table [dataSource]="invitesPending$" multiTemplateDataRows class="mat-elevation-z8">        
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nome </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> E-mail </th>
+            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cellphone">
+            <th mat-header-cell *matHeaderCellDef> Contato </th>
+            <td mat-cell *matCellDef="let element"> {{element.cellphone}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="indicatedBy">
+            <th mat-header-cell *matHeaderCellDef> Indicado por </th>
+            <td mat-cell *matCellDef="let element"> {{element.indicatedBy}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Data de preferência da visita </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="expand">
+            <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button aria-label="expand row"
+                (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                @if (expandedElement === element) {
+                <mat-icon>keyboard_arrow_up</mat-icon>
+                } @else {
+                <mat-icon>keyboard_arrow_down</mat-icon>
+                }
+              </button>
+            </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+              <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <form>
+                  <div class="fields">
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>Nome</mat-label>
+                      <input [readonly]="true" matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
+                        autocomplete="off">
+                    </mat-form-field>
+
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>E-mail</mat-label>
+                      <input [readonly]="true" matInput placeholder="E-mail" #email="ngModel" [ngModel]="element.email" name="email"
+                        autocomplete="off">
+                    </mat-form-field>                  
+
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>Contato</mat-label>
+                      <input [readonly]="true" matInput placeholder="Contato" #cellphone="ngModel" [ngModel]="element.cellphone" name="cellphone"
+                        autocomplete="off">
+                    </mat-form-field>                  
+                  
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>Indicado por</mat-label>
+                      <input [readonly]="true" matInput placeholder="Indicador por" #indicatedBy="ngModel" [ngModel]="element.indicatedBy" name="indicatedBy"
+                        autocomplete="off">
+                    </mat-form-field>                  
+                  
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>Status</mat-label>
+                      <mat-select #status="ngModel" [ngModel]="element.status" name="status">
+                        <mat-option *ngFor="let status of inviteStatus" [value]="status">
+                          {{ status }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>                  
+                  
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>Data de preferência da visita</mat-label>
+                      <input [readonly]="true" matInput placeholder="Data de preferência da visita" #date="ngModel" [ngModel]="element.date" name="date"
+                        autocomplete="off">
+                    </mat-form-field>
+                  </div>
+                  <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+                  <vicci-button accent
+                    (click)="onSubmit(element.id, name, email, cellphone, indicatedBy, status, date)">Salvar</vicci-button>
+                </form>
+              </div>
+            </td>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === row"
+            (click)="expandedElement = expandedElement === row ? null : row">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        
+          <tr class="mat-row noData" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              Tabela sem dados.
+            </td>
+          </tr>
+        </table>        
+    </div>      
+</div>

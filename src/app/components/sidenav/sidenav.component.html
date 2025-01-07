@@ -5,11 +5,14 @@
         </a>
     </div>
     <nav class="sidenav-itens">
-        <a class="item" routerLink="/dashboard" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Instrutor' || user.role === 'Aluno' || user.role === 'Recepcionista'">
+        <!-- <a class="item" routerLink="/dashboard" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Instrutor' || user.role === 'Aluno' || user.role === 'Recepcionista'">
             Dashboard
-        </a>
+        </a> -->
         <a class="item" routerLink="/feedback" *ngIf="user.role === 'Gerente' || user.role === 'Administrador'">
             Feedback
+        </a>
+        <a class="item" routerLink="/invite" *ngIf="user.role === 'Gerente' || user.role === 'Administrador' || user.role === 'Aluno'">
+            Invite
         </a>
         <a class="item" routerLink="/admin" *ngIf="user.role === 'Gerente' || user.role === 'Administrador'">
             Administração

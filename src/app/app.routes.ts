@@ -20,6 +20,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/feedback/feedback.component').then(mod => mod.FeedbackComponent)
     },
     {
+        path: 'invite',
+        canActivate: [authGuard],
+        data: { roles: ['Gerente', 'Administrador', 'Aluno'] },
+        loadComponent: () => import('./pages/invite/invite.component').then(mod => mod.InviteComponent)
+    },
+    {
         path: 'admin',
         canActivate: [authGuard],
         data: { roles: ['Gerente', 'Administrador'] },

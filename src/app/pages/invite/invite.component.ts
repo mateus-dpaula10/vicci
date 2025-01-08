@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { NgxMaterialTimepickerModule  } from 'ngx-material-timepicker';
 import { ButtonComponent } from '../../components/utils/button/button.component';
 import { InviteService } from '../../services/invite.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,6 +16,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { EmailService } from '../../services/email.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-invite',
@@ -38,7 +41,9 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     FormsModule, 
     MatSelectModule, 
     MatOptionModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    HttpClientModule,
+    NgxMaterialTimepickerModule
   ],
   templateUrl: './invite.component.html',
   styleUrl: './invite.component.scss',
@@ -52,7 +57,7 @@ export class InviteComponent {
   )
   inviteStatus: any = ['pendente', 'aprovado']
  
-  displayedColumns: string[] = ['name', 'email', 'indicatedBy', 'status', 'date'];
+  displayedColumns: string[] = ['name', 'email', 'cellphone', 'indicatedBy', 'status', 'date', 'hour'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource()
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand']
   expandedElement: any
@@ -61,13 +66,15 @@ export class InviteComponent {
     private fb: FormBuilder,
     private inviteService: InviteService,
     private snackbar: MatSnackBar,
-    private usersService: AuthService
+    private usersService: AuthService,
+    private emailService: EmailService
   ) {
     this.inviteForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       cellphone: ['', Validators.required],
       date: ['', Validators.required],
+      hour: ['', Validators.required],
     })
   }
 
@@ -85,7 +92,7 @@ export class InviteComponent {
   }
 
   sendInvite() {
-    if (this.inviteForm.valid) {
+    if (this.inviteForm.valid) {      
       this.inviteService.submit(this.inviteForm.value, this.user)
         .then(() => {
           this.snackbar.open("Convite enviado com sucesso!", 'Fechar', { duration: 3000 })
@@ -102,17 +109,45 @@ export class InviteComponent {
     cellphone: any,
     indicatedBy: any,
     status: any,
-    date: any
+    date: any,
+    hour: any
   ) {
-    this.inviteService.update(id, {
+    const payload = {
       name: name.value,
       email: email.value,
       cellphone: cellphone.value,
       indicatedBy: indicatedBy.value,
       status: status.value,
-      date: date.value
-    })
-      .then(() => this.snackbar.open("Convite aprovado com sucesso!", 'Fechar', { duration: 3000 }))
+      date: date.value,
+      hour: hour.value
+    }
+
+    this.inviteService
+      .update(id, payload)
+      .then(() => {
+        this.snackbar.open("Convite atualizado com sucesso!", 'Fechar', { duration: 3000 })
+
+        if (payload.status === 'aprovado') {
+          const emailBody = `
+            Olá ${payload.name},
+
+            Seu convite foi aprovado! Estamos ansiosos para receber você.
+
+            Data da visita: ${payload.date} - ${payload.hour}
+            Endereço: 
+
+            Atenciosamente,
+            Equipe Vicci Studio.
+          `
+
+          this.emailService
+            .sendEmail(payload.email, 'Convite aprovado!', emailBody)
+            .subscribe(
+              () => this.snackbar.open("Notificação enviada por e-mail!", 'Fechar', { duration: 3000 }),
+              (error) => this.snackbar.open("Erro ao enviar email: " + error.message, 'Fechar', { duration: 3000 })
+            )
+        }
+      })
       .catch((error) => this.snackbar.open(error.message, 'Fechar', { duration: 3000 }))
   }
 

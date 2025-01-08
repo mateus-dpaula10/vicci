@@ -20,6 +20,10 @@
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
+        <mat-form-field>
+          <mat-label>Horário</mat-label>
+          <input matInput formControlName="hour" placeholder="Horário de preferência de visita da indicação" type="time">
+        </mat-form-field>
         <vicci-button (click)="sendInvite()" accent>Enviar convite</vicci-button>
     </form>
 </div>
@@ -38,7 +42,7 @@
           </ng-container>
 
           <ng-container matColumnDef="cellphone">
-            <th mat-header-cell *matHeaderCellDef> Contato </th>
+            <th mat-header-cell *matHeaderCellDef> Celular </th>
             <td mat-cell *matCellDef="let element"> {{element.cellphone}} </td>
           </ng-container>
 
@@ -55,6 +59,11 @@
           <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef> Data de preferência da visita </th>
             <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="hour">
+            <th mat-header-cell *matHeaderCellDef> Horário de preferência da visita </th>
+            <td mat-cell *matCellDef="let element"> {{element.hour}} </td>
           </ng-container>
         
           <ng-container matColumnDef="expand">
@@ -89,9 +98,9 @@
                     </mat-form-field>                  
 
                     <mat-form-field subscriptSizing="dynamic">
-                      <mat-label>Contato</mat-label>
-                      <input [readonly]="true" matInput placeholder="Contato" #cellphone="ngModel" [ngModel]="element.cellphone" name="cellphone"
-                        autocomplete="off">
+                      <mat-label>Celular</mat-label>
+                      <input [readonly]="true" matInput placeholder="Celular" #cellphone="ngModel" [ngModel]="element.cellphone" name="cellphone"
+                        autocomplete="off" mask="(00)00000-0000">
                     </mat-form-field>                  
                   
                     <mat-form-field subscriptSizing="dynamic">
@@ -114,10 +123,16 @@
                       <input [readonly]="true" matInput placeholder="Data de preferência da visita" #date="ngModel" [ngModel]="element.date" name="date"
                         autocomplete="off">
                     </mat-form-field>
+                  
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>Horário de preferência da visita</mat-label>
+                      <input type="time" matInput placeholder="Horário de preferência da visita" #hour="ngModel" [ngModel]="element.hour" name="hour"
+                        autocomplete="off">
+                    </mat-form-field>
                   </div>
                   <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
                   <vicci-button accent
-                    (click)="onSubmit(element.id, name, email, cellphone, indicatedBy, status, date)">Salvar</vicci-button>
+                    (click)="onSubmit(element.id, name, email, cellphone, indicatedBy, status, date, hour)">Salvar</vicci-button>
                 </form>
               </div>
             </td>

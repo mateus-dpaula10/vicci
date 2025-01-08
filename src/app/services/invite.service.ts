@@ -23,7 +23,7 @@ export class InviteService {
     return setDoc(invitDoc, {
       ...payload,
       indicatedBy: user.email,
-      createdAt: new Date().toLocaleDateString('pt-BR'),
+      createdAt: new Date(),
       status: 'pendente'
     })
   }

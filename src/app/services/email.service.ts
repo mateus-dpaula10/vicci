@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EmailService {
-  private apiUrl = 'http://localhost:3000/send-email'
+  private apiUrl = 'https://vicci-email-api.onrender.com/send-email'
 
   constructor(private http: HttpClient) { }
 

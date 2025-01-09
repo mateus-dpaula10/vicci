@@ -144,12 +144,6 @@
             (click)="expandedElement = expandedElement === row ? null : row">
           </tr>
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-        
-          <tr class="mat-row noData" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              Tabela sem dados.
-            </td>
-          </tr>
         </table>        
     </div>      
 </div>

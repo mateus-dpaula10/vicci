@@ -18,6 +18,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { EmailService } from '../../services/email.service';
 import { HttpClientModule } from '@angular/common/http';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-invite',
@@ -43,7 +44,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatOptionModule,
     NgxMaskDirective,
     HttpClientModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    MatButtonModule
   ],
   templateUrl: './invite.component.html',
   styleUrl: './invite.component.scss',
@@ -57,7 +59,7 @@ export class InviteComponent {
   )
   inviteStatus: any = ['pendente', 'aprovado']
  
-  displayedColumns: string[] = ['name', 'email', 'cellphone', 'indicatedBy', 'status', 'date', 'hour'];
+  displayedColumns: string[] = ['name', 'email', 'cellphone', 'indicatedBy', 'status'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource()
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand']
   expandedElement: any
@@ -73,8 +75,8 @@ export class InviteComponent {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       cellphone: ['', Validators.required],
-      date: ['', Validators.required],
-      hour: ['', Validators.required],
+      // date: ['', Validators.required],
+      // hour: ['', Validators.required],
     })
   }
 
@@ -108,18 +110,14 @@ export class InviteComponent {
     email: any,
     cellphone: any,
     indicatedBy: any,
-    status: any,
-    date: any,
-    hour: any
+    status: any
   ) {
     const payload = {
       name: name.value,
       email: email.value,
       cellphone: cellphone.value,
       indicatedBy: indicatedBy.value,
-      status: status.value,
-      date: date.value,
-      hour: hour.value
+      status: status.value
     }
 
     this.inviteService
@@ -131,9 +129,10 @@ export class InviteComponent {
           const emailBody = `
             Olá ${payload.name},
 
+            Você foi indicado pelo aluno ${payload.indicatedBy} a visitar e conhecer nossa academia.
+            
             Seu convite foi aprovado! Estamos ansiosos para receber você.
-
-            Data da visita: ${payload.date} - ${payload.hour}
+            
             Endereço: 
 
             Atenciosamente,

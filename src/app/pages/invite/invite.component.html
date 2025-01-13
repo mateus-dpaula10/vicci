@@ -14,7 +14,7 @@
             <mat-label>Celular</mat-label>
             <input matInput formControlName="cellphone" placeholder="Celular da indicação" mask="(00)00000-0000">
         </mat-form-field>
-        <mat-form-field>
+        <!-- <mat-form-field>
             <mat-label>Data</mat-label>
             <input matInput formControlName="date" [matDatepicker]="picker" placeholder="Data de preferência de visita da indicação">
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -23,7 +23,7 @@
         <mat-form-field>
           <mat-label>Horário</mat-label>
           <input matInput formControlName="hour" placeholder="Horário de preferência de visita da indicação" type="time">
-        </mat-form-field>
+        </mat-form-field> -->
         <vicci-button (click)="sendInvite()" accent>Enviar convite</vicci-button>
     </form>
 </div>
@@ -56,7 +56,7 @@
             <td mat-cell *matCellDef="let element"> {{element.status}} </td>
           </ng-container>
 
-          <ng-container matColumnDef="date">
+          <!-- <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef> Data de preferência da visita </th>
             <td mat-cell *matCellDef="let element"> {{element.date}} </td>
           </ng-container>
@@ -64,7 +64,7 @@
           <ng-container matColumnDef="hour">
             <th mat-header-cell *matHeaderCellDef> Horário de preferência da visita </th>
             <td mat-cell *matCellDef="let element"> {{element.hour}} </td>
-          </ng-container>
+          </ng-container> -->
         
           <ng-container matColumnDef="expand">
             <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
@@ -72,13 +72,13 @@
               <button mat-icon-button aria-label="expand row"
                 (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
                 @if (expandedElement === element) {
-                <mat-icon>keyboard_arrow_up</mat-icon>
+                  <mat-icon>keyboard_arrow_up</mat-icon>
                 } @else {
-                <mat-icon>keyboard_arrow_down</mat-icon>
+                  <mat-icon>keyboard_arrow_down</mat-icon>
                 }
               </button>
             </td>
-          </ng-container>
+        </ng-container>
         
           <ng-container matColumnDef="expandedDetail">
             <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
@@ -118,7 +118,7 @@
                       </mat-select>
                     </mat-form-field>                  
                   
-                    <mat-form-field subscriptSizing="dynamic">
+                    <!-- <mat-form-field subscriptSizing="dynamic">
                       <mat-label>Data de preferência da visita</mat-label>
                       <input [readonly]="true" matInput placeholder="Data de preferência da visita" #date="ngModel" [ngModel]="element.date" name="date"
                         autocomplete="off">
@@ -128,11 +128,11 @@
                       <mat-label>Horário de preferência da visita</mat-label>
                       <input type="time" matInput placeholder="Horário de preferência da visita" #hour="ngModel" [ngModel]="element.hour" name="hour"
                         autocomplete="off">
-                    </mat-form-field>
+                    </mat-form-field> -->
                   </div>
                   <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
                   <vicci-button accent
-                    (click)="onSubmit(element.id, name, email, cellphone, indicatedBy, status, date, hour)">Salvar</vicci-button>
+                    (click)="onSubmit(element.id, name, email, cellphone, indicatedBy, status)">Salvar</vicci-button>
                 </form>
               </div>
             </td>

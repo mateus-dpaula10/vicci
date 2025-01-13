@@ -56,42 +56,42 @@
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Nome</mat-label>
                 <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
-                  autocomplete="off">
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Email</mat-label>
                 <input type="email" matInput placeholder="Email" #email="ngModel" [ngModel]="element.email" name="email"
-                  autocomplete="off">
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Senha</mat-label>
                 <input type="password" matInput placeholder="Senha" #password="ngModel" [ngModel]="element.password" name="password"
-                  autocomplete="off">
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Celular</mat-label>
-                <input type="phoneNumber" matInput placeholder="phoneNumber" #phoneNumber="ngModel" mask="(00)00000-0000"
-                  [ngModel]="element.phoneNumber" name="phoneNumber" autocomplete="off">
+                <input type="phoneNumber" matInput placeholder="Celular" #phoneNumber="ngModel" mask="(00)00000-0000"
+                  [ngModel]="element.phoneNumber" name="phoneNumber" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>CPF</mat-label>
-                <input matInput placeholder="CPF" #cpf="ngModel" [ngModel]="element.cpf" mask="000.000.000-00" name="cpf"
-                  autocomplete="off">
+                <input matInput placeholder="CPF" #cpf="ngModel" [ngModel]="currentUser.role === 'Administrador' || currentUser.email === element.email ? element.cpf : ''" mask="000.000.000-00" name="cpf"
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Data de nascimento</mat-label>
                 <input type="text" matInput placeholder="Data de nascimento" #birthDate="ngModel" mask="00/00/0000"
-                  [ngModel]="element.birthDate" name="birthDate" autocomplete="off">
+                  [ngModel]="element.birthDate" name="birthDate" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Função</mat-label>
-                <mat-select #role="ngModel" [ngModel]="element.role" name="role">
+                <mat-select #role="ngModel" [ngModel]="element.role" name="role" [disabled]="currentUser.role !== 'Administrador'">
                   <mat-option *ngFor="let role of roles" [value]="role">
                     {{ role }}
                   </mat-option>
@@ -100,7 +100,7 @@
 
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho camiseta</mat-label>
-                <mat-select #shirtSize="ngModel" [ngModel]="element.shirtSize" name="shirtSize">
+                <mat-select #shirtSize="ngModel" [ngModel]="element.shirtSize" name="shirtSize" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
                   <mat-option *ngFor="let size of sizes" [value]="size">
                     {{ size }}
                   </mat-option>
@@ -110,19 +110,19 @@
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho calça</mat-label>
                 <input type="text" matInput placeholder="Tamanho calça" #pantsSize="ngModel" mask="00"
-                  [ngModel]="element.pantsSize" name="pantsSize" autocomplete="off">
+                  [ngModel]="element.pantsSize" name="pantsSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
 
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho bermuda</mat-label>
                 <input type="text" matInput placeholder="Tamanho bermuda" #shortsSize="ngModel" mask="00"
-                  [ngModel]="element.shortsSize" name="shortsSize" autocomplete="off">
+                  [ngModel]="element.shortsSize" name="shortsSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
 
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho calçado fitness</mat-label>
                 <input type="text" matInput placeholder="Tamanho calçado fitness" #shoeSize="ngModel" mask="00"
-                  [ngModel]="element.shoeSize" name="shoeSize" autocomplete="off">
+                  [ngModel]="element.shoeSize" name="shoeSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
               </mat-form-field>
   
               <div class="file">
@@ -138,26 +138,32 @@
                 }
               </div>
   
-              <div class="file">
-                <label for="photoEditRegister">
-                  <div>
-                    @if(imagePreview){
-                    <img [src]="imagePreview" alt="" srcset="">
-                    }@else{
-                    <img [src]="element.photo" alt="" srcset="">
-                    }
-                  </div>
-                  <div>
-                    <span>Editar imagem</span>
-                    <input type="File" (change)="onImageSelected($event.target, element)" id="photoEditRegister"
-                      name="photoEditRegister">
-                  </div>
-                </label>
-              </div>
+              @if (currentUser.role === 'Administrador' || currentUser.email === element.email) {
+                <div class="file">
+                  <label for="photoEditRegister">
+                    <div>
+                      @if(imagePreview){
+                      <img [src]="imagePreview" alt="" srcset="">
+                      }@else{
+                      <img [src]="element.photo" alt="" srcset="">
+                      }
+                    </div>
+                    <div>
+                      <span>Editar imagem</span>
+                      <input type="File" (change)="onImageSelected($event.target, element)" id="photoEditRegister"
+                        name="photoEditRegister">
+                    </div>
+                  </label>
+                </div>
+              }
             </div>
-            <vicci-button warn (click)="onDelete(element.id, element.photo, element.pdf)">Excluir</vicci-button>
-            <vicci-button accent
-              (click)="onSubmit(element.id, name, email, password, phoneNumber, cpf, birthDate, element.pdf, element.photo, role, shirtSize, pantsSize, shortsSize, shoeSize)">Salvar</vicci-button>
+            @if (currentUser.role === 'Administrador') {
+              <vicci-button warn (click)="onDelete(element.id, element.photo, element.pdf)">Excluir</vicci-button>
+            }
+            @if (currentUser.role === 'Administrador' || currentUser.email === element.email) {
+              <vicci-button accent
+                (click)="onSubmit(element.id, name, email, password, phoneNumber, cpf, birthDate, element.pdf, element.photo, role, shirtSize, pantsSize, shortsSize, shoeSize)">Salvar</vicci-button>
+            }
           </form>
         </div>
       </td>

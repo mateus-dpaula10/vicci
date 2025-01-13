@@ -1,19 +1,19 @@
-import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { collection, doc, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AuthService } from '../../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { ButtonComponent } from '../../components/utils/button/button.component';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'app-admin',
+  selector: 'app-users',
   animations: [
     trigger('detailExpand', [
       state('collapsed,void', style({ height: '0px', minHeight: '0' })),
@@ -23,11 +23,11 @@ import { MatOption, MatSelect } from '@angular/material/select';
   ],
   standalone: true,
   imports: [CommonModule, MatIconModule, MatTableModule, MatInputModule, FormsModule, MatButtonModule, ButtonComponent, MatSelect, MatOption],
-  templateUrl: './admin.component.html',
-  styleUrl: './admin.component.scss',
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AdminComponent {
+export class UsersComponent {
   constructor(
     private firestore: Firestore
   ) {}
@@ -39,10 +39,8 @@ export class AdminComponent {
   approvedUsers: any[] = []  
   roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
   status_: string[] = ['Pendente', 'Aprovado']
-
-  // usuarios$ = this.usersAll.fetchUsers
-
-  displayedColumns: string[] = ['email', 'password', 'role', 'status'];
+  currentUser: any | null = null
+  displayedColumns: string[] = ['name', 'email', 'role', 'status'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;  
@@ -50,7 +48,17 @@ export class AdminComponent {
   async ngOnInit() {
     await this.getPendingUsers()
     await this.getApprovedUsers()
+    this.loadUser()
   } 
+
+  async loadUser(): Promise<void> {
+    try {
+      this.currentUser = await this.usersAll.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.currentUser = null
+    }
+  }
 
   async getPendingUsers() {
     const usersCollection = collection(this.firestore, 'users')
@@ -91,8 +99,9 @@ export class AdminComponent {
     }
   }
 
-  onSubmit(id: any, email: any, password: any, role: any, status: any) {
+  onSubmit(id: any, name: any, email: any, password: any, role: any, status: any) {
     this.usersAll.update(id, {
+      name: name.value,
       email: email.value,
       password: password.value,
       role: role.value,

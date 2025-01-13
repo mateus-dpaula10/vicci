@@ -53,6 +53,20 @@ export class RegisterComponent {
   )  
   roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
   sizes: string[] = ['P', 'M', 'G', 'GG', 'XG']
+  currentUser: any | null = null
+
+  async ngOnInit() {
+    this.loadUser()
+  }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.currentUser = await this.allStudents.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.currentUser = null
+    }
+  }
 
   openDialog() {
     const dialogRef = this.dialog.open(RegisterModalComponent)
@@ -92,8 +106,7 @@ export class RegisterComponent {
         this.snackbar.open("Aluno atualizado com sucesso!", 'Fechar', { duration: 3000 })
       })
       .catch((error) => {
-        this.snackbar.open(error.message, 'Fechar', { duration: 3000 })
-        console.log(error.message);        
+        this.snackbar.open("Favor, preencher todos os campos!", 'Fechar', { duration: 3000 })
       });
   }
 

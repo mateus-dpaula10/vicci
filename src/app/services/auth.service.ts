@@ -58,6 +58,37 @@ export class AuthService {
     }
   }
 
+  async registerUser(name: string, email: string, password: string) {
+    try {
+      const usersRef = collection(this.firestore, 'users')
+      const emailQuey = query(usersRef, where('email', '==', email))
+      const emailSnapshot = await getDocs(emailQuey)
+
+      if (!emailSnapshot.empty) {
+        this.snackbar.open("E-mail já cadastrado! Tente usar outro e-mail.", 'Fechar', { duration: 3000 })
+        return
+      }
+
+      const userId = uuidv4()
+      const userDocRef = doc(this.firestore, `users/${userId}`)
+      const hashedPassword = await bcrypt.hash(password, 10)
+
+      await setDoc(userDocRef, {
+        id: userId,
+        name,
+        email,
+        password: hashedPassword,
+        status: 'Pendente',
+        role: null,
+        createdAt: new Date()
+      })
+      this.snackbar.open("Cadastro realizado com sucesso. Aguarde aprovação!", 'Fechar', { duration: 3000 })
+    } catch (error) {
+      console.error('Erro ao criar usuário: ', error)
+      this.snackbar.open("Erro ao cadastrar usuário.", 'Fechar', { duration: 3000 })
+    }
+  }
+
   async getCurrentUser(): Promise<any | null> {
     const userId = localStorage.getItem('userId')
 
@@ -76,44 +107,19 @@ export class AuthService {
     return userDocSnapshot.data()
   }
 
-  async registerUser(email: string, password: string) {
-    try {
-      const usersRef = collection(this.firestore, 'users')
-      const emailQuey = query(usersRef, where('email', '==', email))
-      const emailSnapshot = await getDocs(emailQuey)
-
-      if (!emailSnapshot.empty) {
-        this.snackbar.open("E-mail já cadastrado! Tente usar outro e-mail.", 'Fechar', { duration: 3000 })
-        return
-      }
-
-      const userId = uuidv4()
-      const userDocRef = doc(this.firestore, `users/${userId}`)
-      const hashedPassword = await bcrypt.hash(password, 10)
-
-      await setDoc(userDocRef, {
-        id: userId,
-        email,
-        password: hashedPassword,
-        status: 'Pendente',
-        role: null,
-        createdAt: new Date()
-      })
-      this.snackbar.open("Cadastro realizado com sucesso. Aguarde aprovação!", 'Fechar', { duration: 3000 })
-    } catch (error) {
-      console.error('Erro ao criar usuário: ', error)
-      this.snackbar.open("Erro ao cadastrar usuário.", 'Fechar', { duration: 3000 })
-    }
-  }
-
   logout(): void {
     localStorage.removeItem('userId')
 
     this.router.navigate(['/login'])
   }
 
-  update(id: any, payload: any) {
+  async update(id: any, payload: any) {
     const user = doc(this.usersAll, id)
+
+    if (payload.password) {
+      payload.password = await bcrypt.hash(payload.password, 10)
+    } 
+
     return updateDoc(user, payload)
   }
 

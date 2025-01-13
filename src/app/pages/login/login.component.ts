@@ -43,6 +43,7 @@ export class LoginComponent {
   })
 
   formCreate: FormGroup = this.fb.group({
+    name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', [Validators.required]]
@@ -70,9 +71,9 @@ export class LoginComponent {
       return
     }
 
-    const { email, password } = this.formCreate.value
+    const { name, email, password } = this.formCreate.value
 
-    await this.authService.registerUser(email, password)
+    await this.authService.registerUser(name, email, password)
     this.changeDiv()
   }
 

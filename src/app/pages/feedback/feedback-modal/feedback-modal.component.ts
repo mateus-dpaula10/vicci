@@ -11,11 +11,12 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-feedback-modal',
   standalone: true,
-  imports: [ButtonComponent, CommonModule, MatSelectModule, MatOptionModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatDialogModule],
+  imports: [ButtonComponent, CommonModule, MatSelectModule, MatOptionModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatDialogModule, MatDatepickerModule],
   templateUrl: './feedback-modal.component.html',
   styleUrl: './feedback-modal.component.scss'
 })
@@ -35,17 +36,30 @@ export class FeedbackModalComponent {
   )
 
   feedbackForm: FormGroup
-  ratings: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  currentUser: any | null = null
+  anonimous_feedback: boolean = true
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.feedbackForm = this.fb.group({
-      student: ['', [Validators.required]],
-      rating_appliances: [null, [Validators.required]],
-      rating_cleaning: [null, [Validators.required]],
-      rating_service: [null, [Validators.required]],
-      rating_recommendation: [null, [Validators.required]],
-      comment: ['', [Validators.required, Validators.maxLength(500)]],
+      student: [''],
+      date: ['', Validators.required],
+      rating_appliances: ['', Validators.maxLength(500)],
+      rating_cleaning: ['', Validators.maxLength(500)],
+      rating_service: ['', Validators.maxLength(500)],
+      rating_recommendation: ['', Validators.maxLength(500)],
+      comment: ['', Validators.maxLength(500)],
     })
+
+    this.loadUser()
+  }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.currentUser = await this.allUsers.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.currentUser = null
+    }
   }
 
   onSubmit(): void {

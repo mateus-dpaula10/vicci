@@ -8,7 +8,7 @@ export const routes: Routes = [
         redirectTo: 'dashboard'
     },
     {
-        path: 'dashboard',
+        path: 'dashboard',  
         canActivate: [authGuard],
         data: { roles: ['Gerente', 'Administrador', 'Instrutor', 'Aluno', 'Recepcionista'] },
         loadComponent: () => import('./pages/dashboard/dashboard.component').then(mod => mod.DashboardComponent)

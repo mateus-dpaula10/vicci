@@ -48,7 +48,7 @@ export class AuthService {
       if (userData.status === 'Aprovado') {
         localStorage.setItem('userId', userDoc.id)
         this.snackbar.open("Logado com sucesso!", 'Fechar', { duration: 3000 })
-        this.router.navigate(['/teachers'])
+        this.router.navigate(['/dashboard'])
       } else {
         this.snackbar.open("Aguardando aprovação do administrador!", 'Fechar', { duration: 3000 })
       }

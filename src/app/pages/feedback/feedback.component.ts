@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { FeedbackService } from '../../services/feedback.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-feedback',
@@ -31,10 +32,12 @@ export class FeedbackComponent {
   private dialog = inject(MatDialog)
   private snackbar= inject(MatSnackBar)  
   private feedbackService = inject(FeedbackService)
+  private allStudents = inject(AuthService)
 
   feedbacks$ = this.feedbackService.feedbacks
+  currentUser: any | null = null
 
-  displayedColumns: string[] = ['student', 'rating_appliances', 'rating_cleaning', 'rating_recommendation', 'rating_service']
+  displayedColumns: string[] = ['student', 'date']
   dataSource: MatTableDataSource<any> = new MatTableDataSource()  
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand']
   expandedElement: any
@@ -50,26 +53,41 @@ export class FeedbackComponent {
     })
   }
 
-  onSubmit(
-    id: any,
-    student: any,
-    rating_appliances: any,
-    rating_cleaning: any,
-    rating_recommendation: any,
-    rating_service: any,
-    comment: any
-  ) {
-    this.feedbackService.update(id, {
-      student: student.value,
-      rating_appliances: rating_appliances.value,
-      rating_cleaning: rating_cleaning.value,
-      rating_recommendation: rating_recommendation.value,
-      rating_service: rating_service.value,
-      comment: comment.value
-    }) 
-      .then(() => this.snackbar.open("Feedback atualizado com sucesso!", 'Fechar', { duration: 3000 }))
-      .catch(() => this.snackbar.open("Erro ao atualizar.", 'Fechar', { duration: 3000 }))
+  async ngOnInit() {
+    this.loadUser()
   }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.currentUser = await this.allStudents.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.currentUser = null
+    }
+  }
+
+  // onSubmit(
+  //   id: any,
+  //   student: any,
+  //   date: any,
+  //   rating_appliances: any,
+  //   rating_cleaning: any,
+  //   rating_recommendation: any,
+  //   rating_service: any,
+  //   comment: any
+  // ) {
+  //   this.feedbackService.update(id, {
+  //     student: student.value,
+  //     date: date.value,
+  //     rating_appliances: rating_appliances.value,
+  //     rating_cleaning: rating_cleaning.value,
+  //     rating_recommendation: rating_recommendation.value,
+  //     rating_service: rating_service.value,
+  //     comment: comment.value
+  //   }) 
+  //     .then(() => this.snackbar.open("Feedback atualizado com sucesso!", 'Fechar', { duration: 3000 }))
+  //     .catch(() => this.snackbar.open("Erro ao atualizar.", 'Fechar', { duration: 3000 }))
+  // }
 
   onDelete(id: any) {
     const snackbarRef = this.snackbar.open("Deseja excluir feedback?", 'Excluir', { duration: 3000 })

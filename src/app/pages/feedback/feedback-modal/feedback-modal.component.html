@@ -2,49 +2,81 @@
 
 <mat-dialog-content>
     <form [formGroup]="feedbackForm">
-        <mat-form-field appearance="fill">
-            <mat-label>Selecione um aluno</mat-label>
-            <mat-select id="student" formControlName="student">
-                <mat-option *ngFor="let student of (studentsFiltered | async)" [value]="student.name">
-                    {{ student.name }}
-                </mat-option>
-            </mat-select>
+        @if (currentUser.role === 'Administrador') {
+            <mat-form-field appearance="fill">
+                <mat-label>Selecione um aluno</mat-label>
+                <mat-select id="student" formControlName="student">
+                    <mat-option *ngFor="let student of (studentsFiltered | async)" [value]="student.name">
+                        {{ student.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        } @else {
+            <mat-form-field appearance="fill">
+                <mat-label>Aluno</mat-label>
+                <input matInput formControlName="student" [value]="anonimous_feedback ? '' : currentUser.name" [readonly]="true" />
+            </mat-form-field>
+            <div class="input-anonimous">
+                <input type="checkbox" id="anonimous_feedback" [checked]="anonimous_feedback" (change)="anonimous_feedback = !anonimous_feedback">
+                <label for="anonimous_feedback">Enviar feedback anônimo</label>
+            </div>
+        }
+
+        <mat-form-field>
+            <mat-label>Data da visita à academia</mat-label>
+            <input matInput formControlName="date" [matDatepicker]="picker" placeholder="Data da visita à academia">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-            <mat-label>Avaliação aparelhos (0 a 10)</mat-label>
-            <mat-select id="rating_appliances" formControlName="rating_appliances">
-                <mat-option *ngFor="let rating of ratings" [value]="rating">
-                    {{ rating }}
-                </mat-option>
-            </mat-select>
+            <mat-label>Avaliação aparelhos</mat-label>
+            <textarea
+                matInput
+                rows="4"
+                formControlName="rating_appliances"
+                placeholder="Digite o comentário"
+            ></textarea>
+        </mat-form-field>
+        
+        <mat-form-field appearance="fill">
+            <mat-label>Avaliação aparelhos</mat-label>
+            <textarea
+                matInput
+                rows="4"
+                formControlName="rating_appliances"
+                placeholder="Digite o comentário"
+            ></textarea>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-            <mat-label>Avaliação limpeza (0 a 10)</mat-label>
-            <mat-select id="rating_cleaning" formControlName="rating_cleaning">
-                <mat-option *ngFor="let rating of ratings" [value]="rating">
-                    {{ rating }}
-                </mat-option>
-            </mat-select>
+            <mat-label>Avaliação limpeza</mat-label>
+            <textarea
+                matInput
+                rows="4"
+                formControlName="rating_cleaning"
+                placeholder="Digite o comentário"
+            ></textarea>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-            <mat-label>Avaliação atendimento (0 a 10)</mat-label>
-            <mat-select id="rating_service" formControlName="rating_service">
-                <mat-option *ngFor="let rating of ratings" [value]="rating">
-                    {{ rating }}
-                </mat-option>
-            </mat-select>
+            <mat-label>Avaliação atendimento</mat-label>
+            <textarea
+                matInput
+                rows="4"
+                formControlName="rating_service"
+                placeholder="Digite o comentário"
+            ></textarea>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-            <mat-label>Recomendação para outros (0 a 10)</mat-label>
-            <mat-select id="rating_recommendation" formControlName="rating_recommendation">
-                <mat-option *ngFor="let rating of ratings" [value]="rating">
-                    {{ rating }}
-                </mat-option>
-            </mat-select>
+            <mat-label>Recomendação para outros</mat-label>
+            <textarea
+                matInput
+                rows="4"
+                formControlName="rating_recommendation"
+                placeholder="Digite o comentário"
+            ></textarea>
         </mat-form-field>
 
         <mat-form-field appearance="fill">

@@ -1,5 +1,5 @@
 form {
-    width: 15rem;
+    width: 30rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,5 +7,13 @@ form {
 
     mat-form-field{
         width: 100%;
+    }
+
+    .input-anonimous {
+        margin: -1.5rem auto 0 0;
+
+        label {
+            margin-left: .5rem;
+        }
     }
 }

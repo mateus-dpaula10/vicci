@@ -33,6 +33,11 @@
       <th mat-header-cell *matHeaderCellDef> Função </th>
       <td mat-cell *matCellDef="let element"> {{element.role}} </td>
     </ng-container>
+
+    <ng-container matColumnDef="studentConvidated">
+      <th mat-header-cell *matHeaderCellDef> Aluno convidado </th>
+      <td mat-cell *matCellDef="let element"> {{element.studentConvidated || 'Não'}} </td>
+    </ng-container>
   
     <ng-container matColumnDef="expand">
       <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
@@ -123,6 +128,12 @@
                 <mat-label>Tamanho calçado fitness</mat-label>
                 <input type="text" matInput placeholder="Tamanho calçado fitness" #shoeSize="ngModel" mask="00"
                   [ngModel]="element.shoeSize" name="shoeSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+              </mat-form-field>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Aluno convidado</mat-label>
+                <input type="text" matInput placeholder="Aluno convidado" #studentConvidated="ngModel" [ngModel]="element.studentConvidated ? element.studentConvidated : 'Não'" name="studentConvidated"
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador'">
               </mat-form-field>
   
               <div class="file">

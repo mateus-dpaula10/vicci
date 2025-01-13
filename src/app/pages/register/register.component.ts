@@ -41,7 +41,7 @@ export class RegisterComponent {
   file: any;
   pdf: any;
 
-  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'role'];
+  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'role', 'studentConvidated'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;

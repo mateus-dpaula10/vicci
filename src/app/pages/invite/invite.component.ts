@@ -69,7 +69,8 @@ export class InviteComponent {
     private inviteService: InviteService,
     private snackbar: MatSnackBar,
     private usersService: AuthService,
-    private emailService: EmailService
+    private emailService: EmailService,
+    private authService: AuthService
   ) {
     this.inviteForm = this.fb.group({
       name: ['', Validators.required],
@@ -138,6 +139,8 @@ export class InviteComponent {
             Atenciosamente,
             Equipe Vicci Studio.
           `
+
+          this.authService.registerUser(payload.name, payload.email)
 
           this.emailService
             .sendEmail(payload.email, 'Convite aprovado!', emailBody)

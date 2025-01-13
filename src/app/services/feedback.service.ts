@@ -15,7 +15,7 @@ export class FeedbackService {
 
   create(payload: any) {
     if (payload.date) {
-      payload.date = payload.date.toLocaleDateString()
+      payload.date = payload.date.toLocaleDateString('pt-BR')
     }
 
     return addDoc(this.feedbackCollection, payload)

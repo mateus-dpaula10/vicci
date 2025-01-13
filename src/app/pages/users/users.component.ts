@@ -40,7 +40,7 @@ export class UsersComponent {
   roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
   status_: string[] = ['Pendente', 'Aprovado']
   currentUser: any | null = null
-  displayedColumns: string[] = ['name', 'email', 'role', 'status'];
+  displayedColumns: string[] = ['name', 'email', 'role', 'status', 'studentConvidated'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;  

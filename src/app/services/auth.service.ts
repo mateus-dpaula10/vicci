@@ -58,34 +58,39 @@ export class AuthService {
     }
   }
 
-  async registerUser(name: string, email: string, password: string) {
+  async registerUser(name: string, email: string, password?: string) {
     try {
       const usersRef = collection(this.firestore, 'users')
       const emailQuey = query(usersRef, where('email', '==', email))
       const emailSnapshot = await getDocs(emailQuey)
+      let hashedPassword
+      let guest
 
       if (!emailSnapshot.empty) {
         this.snackbar.open("E-mail já cadastrado! Tente usar outro e-mail.", 'Fechar', { duration: 3000 })
         return
       }
 
-      const userId = uuidv4()
-      const userDocRef = doc(this.firestore, `users/${userId}`)
-      const hashedPassword = await bcrypt.hash(password, 10)
+      if (password) {
+        hashedPassword = await bcrypt.hash(password, 10)
+      } else {
+        hashedPassword = ''
+        guest = 'Sim'
+      }
 
-      await setDoc(userDocRef, {
-        id: userId,
+      await addDoc(usersRef, {
         name,
         email,
         password: hashedPassword,
         status: 'Pendente',
         role: null,
+        studentConvidated: guest,
         createdAt: new Date()
       })
       this.snackbar.open("Cadastro realizado com sucesso. Aguarde aprovação!", 'Fechar', { duration: 3000 })
     } catch (error) {
       console.error('Erro ao criar usuário: ', error)
-      this.snackbar.open("Erro ao cadastrar usuário.", 'Fechar', { duration: 3000 })
+      this.snackbar.open("Erro ao cadastrar usuário. " + error, 'Fechar', { duration: 3000 })
     }
   }
 

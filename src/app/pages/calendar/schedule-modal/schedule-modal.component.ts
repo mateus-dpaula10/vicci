@@ -18,7 +18,6 @@ import { map, Observable } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 
-
 enum ListRole {
   ASSOCIATES,
   CONTRACTORS
@@ -61,18 +60,19 @@ export class ScheduleModalComponent {
   schedulesTeacherDate: any
 
   async ngOnInit(): Promise<void> {
-    this.setSubscriber()
-    this.setAssociatedTeachers()
+    // this.setSubscriber()
+    // this.setAssociatedTeachers()
+    this.setHiredTeachers()
   }
 
-  setSubscriber(): void {
-    this.formSchedules.controls['listRole'].valueChanges.subscribe((value: ListRole) => {
-      if (value == ListRole.ASSOCIATES)
-        this.setAssociatedTeachers();
-      else
-        this.setHiredTeachers();
-    });
-  }
+  // setSubscriber(): void {
+  //   this.formSchedules.controls['listRole'].valueChanges.subscribe((value: ListRole) => {
+  //     if (value == ListRole.ASSOCIATES)
+  //       this.setAssociatedTeachers();
+  //     else
+  //       this.setHiredTeachers();
+  //   });
+  // }
 
   private setAssociatedTeachers(): void {
     this.associateService.teachersAssociate.subscribe({
@@ -99,9 +99,11 @@ export class ScheduleModalComponent {
       teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getDate() == selectedDate.getDate());
       teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getHours() == selectedDate.getHours());
 
-      if (teacherSchedules.length >= 3) {
-        this.snackbar.open("Quantidade de aulas excedida por professor");
-        return;
+      if (teacherSchedules.length >= 2) {
+        const { day, month, year } = payload.date.trim('/')
+        console.log(day)
+        // this.snackbar.open(`Quantidade de aulas do professor ${payload.teacher} excedidas no dia ${payload.date}`)
+        return
       }
     }
     this.schedulesService.create(payload)

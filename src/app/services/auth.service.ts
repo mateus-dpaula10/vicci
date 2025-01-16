@@ -74,7 +74,7 @@ export class AuthService {
       if (password) {
         hashedPassword = await bcrypt.hash(password, 10)
       } else {
-        hashedPassword = ''
+        hashedPassword = await bcrypt.hash('password', 10)
         guest = 'Sim'
       }
 

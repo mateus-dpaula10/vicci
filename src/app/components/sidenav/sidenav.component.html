@@ -11,7 +11,7 @@
         <a class="item" routerLink="/feedback">
             Feedback
         </a>
-        <a class="item" routerLink="/invite">
+        <a class="item" routerLink="/invite" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Aluno'">
             Invite
         </a>
         <a class="item" routerLink="/users">
@@ -20,7 +20,7 @@
         <a class="item" routerLink="/register">
             Alunos
         </a>
-        <a class="item" routerLink="/teachers">
+        <a class="item" routerLink="/teachers" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Recepcionista' || user.role === 'Aluno'">
             Professores
         </a>
         <a class="item" routerLink="/equipments">
@@ -29,7 +29,7 @@
         <a class="item" routerLink="/units">
             Unidades
         </a>
-        <a class="item" routerLink="/plans">
+        <a class="item" routerLink="/plans" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Recepcionista'">
             Planos
         </a>
         <a class="item" routerLink="/calendar">
@@ -38,7 +38,7 @@
         <a class="item" routerLink="/restaurant">
             Restaurante
         </a>
-        <a class="item" routerLink="/employees">
+        <a class="item" routerLink="/employees" *ngIf="user.role === 'Administrador' || user.role === 'Gerente'">
             Funcionários
         </a>
         <a class="item" routerLink="/performance">

@@ -1,8 +1,9 @@
 import { NgStyle } from '@angular/common';
 import { Component, Inject, OnInit, inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { SchedulesService } from '../schedules.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ScheduleModalComponent } from '../schedule-modal/schedule-modal.component';
 
 @Component({
   selector: 'app-calendar-modal',
@@ -12,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './calendar-modal.component.scss'
 })
 export class CalendarModalComponent implements OnInit {
-
+  private dialog = inject(MatDialog)
   private schedulesService = inject(SchedulesService)
   private snackbar = inject(MatSnackBar);
 

@@ -11,6 +11,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '../../../components/utils/button/button.component';
+import { UnitServiceService } from '../../units/unit-service.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'hired',
@@ -22,23 +26,46 @@ import { ButtonComponent } from '../../../components/utils/button/button.compone
     ]),
   ],
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, ButtonComponent, MatIconModule, MatInputModule, FormsModule, AsyncPipe],
+  imports: [
+    MatButtonModule, 
+    MatTableModule, 
+    ButtonComponent, 
+    MatIconModule, 
+    MatInputModule, 
+    FormsModule, 
+    AsyncPipe, 
+    MatCheckboxModule,
+    MatSelectModule, 
+    MatOptionModule
+  ],
   templateUrl: './hired.component.html',
   styleUrl: './hired.component.scss'
 })
 export class HiredComponent {
-
-
   private dialog = inject(MatDialog);
   private hiredService = inject(HiredService);
   private snackbar = inject(MatSnackBar);
+  private unitService = inject(UnitServiceService);
 
   hired$ = this.hiredService.teachersHired;
 
-  displayedColumns: string[] = ['name', 'expertise', 'schedules'];
+  displayedColumns: string[] = ['name', 'expertise', 'schedules', 'selected_units'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
+
+  units: any[] = []
+
+  async ngOnInit() {
+    this.unitService.units.subscribe({
+      next: (res) => {
+        this.units = res
+      },
+      error: (err) => {
+        console.error(err)
+      }
+    })
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(HiredModalComponent);
@@ -51,11 +78,12 @@ export class HiredComponent {
     })
   }
 
-  onSubmit(id: any, name: any, expertise: any, schedules: any) {
+  onSubmit(id: any, name: any, expertise: any, schedules: any, selected_units: any[]) {
     this.hiredService.update(id, {
       name: name.value,
       expertise: expertise.value,
-      schedules: schedules.value
+      schedules: schedules.value,
+      selected_units: selected_units
     })
       .then(() => this.snackbar.open("Professor contratado atualizado"))
       .catch(() => this.snackbar.open("Erro ao atualizar"))

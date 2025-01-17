@@ -7,15 +7,21 @@ import { HiredService } from '../teachers/hired/hired.service';
 import { AssociateService } from '../teachers/associate/associate.service';
 import { ScheduleModalComponent } from './schedule-modal/schedule-modal.component';
 import { SchedulesService } from './schedules.service';
-import { Observable, Subscription, finalize } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ITeacher } from '../teachers/models/teacher.interface';
 import { ISchedule } from './models/schedule.interface';
-
+import { UnitServiceService } from '../units/unit-service.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [NgStyle, ButtonComponent],
+  imports: [NgStyle, ButtonComponent, MatFormFieldModule, MatSelectModule, MatOptionModule, ReactiveFormsModule, MatButtonModule],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss'
 })
@@ -27,31 +33,59 @@ export class CalendarComponent {
   private associateService = inject(AssociateService);
   private schedulesService = inject(SchedulesService);
   private getSchedules: Observable<any> = this.schedulesService.schedules;
+  private unitService = inject(UnitServiceService);
+  private fb = inject(FormBuilder)
+  private snackbar = inject(MatSnackBar)
 
   currentMonth: number | any;
   currentYear: number | any;
+  formSelectedUnit: FormGroup
+  units: any[] = []
   teachersH: ITeacher[] = [];
   teachersA: ITeacher[] = [];
   schedules: ISchedule[] = [];
+  showCalendar: boolean = false
 
   openDialog(): void {
     this.dialog.open(ScheduleModalComponent, { data: this.schedules });
   }
 
   async ngOnInit() {
+    this.unitService.units.subscribe({
+      next: (res) => {
+        this.units = res
+      },
+      error: (err) => {
+        console.error(err)
+      }
+    })
+
+    this.formSelectedUnit = this.fb.group({
+      unit: ['', Validators.required]
+    })
+  }
+
+  async filterUnit() {
+    if (this.formSelectedUnit.invalid) {
+      this.snackbar.open("Preecha todos os campos corretamente!", 'Fechar', { duration: 3000 })
+      return
+    }
+
+    this.showCalendar = true
+
     const currentDate = new Date();
     this.currentMonth = currentDate.getMonth();
     this.currentYear = currentDate.getFullYear();
     this.teachersH = (await this.loadHiredTeachers()).map(name => ({ name: name, color: this.generateRandomColor() }));; // Carregar os professores contratados ao inicializar o componente
-    this.teachersA = (await this.loadAssociateTeachers()).map(name => ({ name: name, color: this.generateRandomColor() }));
+    // this.teachersA = (await this.loadAssociateTeachers()).map(name => ({ name: name, color: this.generateRandomColor() }));
     let count = 0;
     this.getSchedules.subscribe((res: any) => {
       if (count > 0) return;
       count++;
       this.schedules = res.map((schedule: any) => {
-        const teacherDetails = this.findTeacher(schedule.teacher, this.teachersH, this.teachersA);
+        const teacherDetails = this.findTeacher(schedule.teacher, this.teachersH);
         if (teacherDetails) {
-          return { ...schedule, teacher: teacherDetails };
+          return { ...schedule, teacher: teacherDetails, unit: this.formSelectedUnit.get('unit') };
         }
         return schedule;
       });
@@ -69,13 +103,13 @@ export class CalendarComponent {
     })
   }
 
-  loadAssociateTeachers(): Promise<[]> {
-    return new Promise((resolve: any) => {
-      this.associateService.getFieldNames('name').subscribe(names => {
-        return resolve(names)
-      })
-    });
-  }
+  // loadAssociateTeachers(): Promise<[]> {
+  //   return new Promise((resolve: any) => {
+  //     this.associateService.getFieldNames('name').subscribe(names => {
+  //       return resolve(names)
+  //     })
+  //   });
+  // }
 
   calculateDaysOfMonth(month: number, year: number) {
     const firstDay = new Date(year, month, 1);
@@ -113,17 +147,17 @@ export class CalendarComponent {
     }
   }
 
-  findTeacher(teacherName: string, teachersH: any[], teachersA: any[]): ITeacher | null {
+  findTeacher(teacherName: string, teachersH: any[]): ITeacher | null {
 
     const hiredTeacher = teachersH.find(teacher => teacher.name === teacherName);
     if (hiredTeacher) {
       return hiredTeacher;
     }
 
-    const associateTeacher = teachersA.find(teacher => teacher.name === teacherName);
-    if (associateTeacher) {
-      return associateTeacher;
-    }
+    // const associateTeacher = teachersA.find(teacher => teacher.name === teacherName);
+    // if (associateTeacher) {
+    //   return associateTeacher;
+    // }
 
     return null;
   }

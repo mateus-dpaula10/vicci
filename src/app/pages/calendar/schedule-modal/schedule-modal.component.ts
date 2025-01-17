@@ -47,6 +47,7 @@ export class ScheduleModalComponent {
     teacher: [[], Validators.required],
     date: [[], Validators.required],
   });
+  user: any | null = null
 
   constructor(
     public dialogRef: MatDialogRef<ScheduleModalComponent>,
@@ -63,6 +64,16 @@ export class ScheduleModalComponent {
     // this.setSubscriber()
     // this.setAssociatedTeachers()
     this.setHiredTeachers()
+    this.loadUser()
+  }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.user = await this.allStudents.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.user = null
+    }
   }
 
   // setSubscriber(): void {
@@ -89,29 +100,35 @@ export class ScheduleModalComponent {
   }
 
   onSubmit(): void {
+    if (this.formSchedules.invalid) {
+      this.snackbar.open("Preencha todos os campos corretamente!", 'Fechar', { duration: 3000 })
+      return
+    }
+
     const payload = this.formSchedules.value;
     let teacherSchedules: ISchedule[] = this.data.filter((schedule: ISchedule) => schedule.teacher.name == payload.teacher);
-    if (teacherSchedules.length >= 3) {
-      const selectedDate: Date = new Date(payload.date)
+    let studentSchedules: ISchedule[] = this.data.filter((schedule: ISchedule) => schedule.student == payload.student && schedule.date == payload.date)
 
-      teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getFullYear() == selectedDate.getFullYear());
-      teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getMonth() == selectedDate.getMonth());
-      teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getDate() == selectedDate.getDate());
-      teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getHours() == selectedDate.getHours());
-
-      if (teacherSchedules.length >= 2) {
-        const { day, month, year } = payload.date.trim('/')
-        console.log(day)
-        // this.snackbar.open(`Quantidade de aulas do professor ${payload.teacher} excedidas no dia ${payload.date}`)
-        return
-      }
+    const selectedDate: Date = new Date(payload.date)
+    
+    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getFullYear() == selectedDate.getFullYear());
+    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getMonth() == selectedDate.getMonth());
+    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getDate() == selectedDate.getDate());
+    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getHours() == selectedDate.getHours());
+    
+    if (teacherSchedules.length >= 2) {
+      this.snackbar.open(`Quantidade de aulas do(a) professor(a) ${payload.teacher} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.date.substring(11, 16)}`)
+      return
+    } else if (studentSchedules.length >= 1) {
+      this.snackbar.open(`Quantidade de aulas do(a) aluno(a) ${payload.student} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.date.substring(11, 16)}`) 
+      return
     }
+
     this.schedulesService.create(payload)
       .then((result) => {
         this.snackbar.open("Horário adicionado com sucesso");
         this.dialogRef.close(result);
       })
-
       .catch(() => this.snackbar.open("Erro ao adicionar horário"));
   }
 }

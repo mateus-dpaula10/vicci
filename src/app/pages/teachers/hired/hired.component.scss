@@ -53,6 +53,22 @@ table {
                 mat-form-field {
                     width: 100%;
                 }
+
+                .units {
+                    width: 100%;
+
+                    .units-checkbox {
+                        margin-top: 1rem;
+                        display: flex;   
+                        flex-direction: column;         
+                        row-gap: 1rem;
+
+                        > div {
+                            display: flex;
+                            gap: .5rem;
+                        }
+                    }
+                }
             }
         }
     }

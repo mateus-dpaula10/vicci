@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 
-@Component({
+@Component({  
   selector: 'hired',
   animations: [
     trigger('detailExpand', [
@@ -36,7 +36,8 @@ import { MatOptionModule } from '@angular/material/core';
     AsyncPipe, 
     MatCheckboxModule,
     MatSelectModule, 
-    MatOptionModule
+    MatOptionModule,
+    CommonModule
   ],
   templateUrl: './hired.component.html',
   styleUrl: './hired.component.scss'
@@ -49,7 +50,7 @@ export class HiredComponent {
 
   hired$ = this.hiredService.teachersHired;
 
-  displayedColumns: string[] = ['name', 'expertise', 'schedules', 'selected_units'];
+  displayedColumns: string[] = ['name', 'expertise', 'schedules', 'unit'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
@@ -78,13 +79,15 @@ export class HiredComponent {
     })
   }
 
-  onSubmit(id: any, name: any, expertise: any, schedules: any, selected_units: any[]) {
-    this.hiredService.update(id, {
+  onSubmit(id: any, name: any, expertise: any, schedules: any, unit: any) {
+    const payload = {
       name: name.value,
       expertise: expertise.value,
       schedules: schedules.value,
-      selected_units: selected_units
-    })
+      unit: unit.value
+    }
+
+    this.hiredService.update(id, payload)
       .then(() => this.snackbar.open("Professor contratado atualizado"))
       .catch(() => this.snackbar.open("Erro ao atualizar"))
   }

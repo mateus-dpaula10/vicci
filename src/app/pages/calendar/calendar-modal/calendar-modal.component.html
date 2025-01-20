@@ -11,14 +11,16 @@
                         {{ hour.hours }}h
                     </div>
                     @for (schedule of hour.schedules; track schedule){
-                    <div class="schedules" [ngStyle]="{'background-color':  schedule.teacher.color}" (click)="onDelete(schedule.id)">
-                        <div class="scheduleTeacher">
-                            Professor: {{schedule.teacher.name}}
+                        <div class="schedules" [ngStyle]="{'background-color':  schedule.teacher.color}">
+                            <div class="scheduleTeacher">
+                                Professor: {{schedule.teacher.name}}
+                            </div>
+                            <div class="scheduleTeacher">
+                                Aluno: {{schedule.student}}
+                            </div>
+                            <button (click)="onDelete(schedule.id)">Excluir</button>
+                            <button (click)="onSubmit(schedule)">Editar</button>
                         </div>
-                        <div class="scheduleTeacher">
-                            Aluno: {{schedule.student}}
-                        </div>
-                    </div>
                     }
                 </div>
             }

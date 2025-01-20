@@ -51,8 +51,14 @@ export class ScheduleModalComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ScheduleModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ISchedule[]
-  ) { }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.unitSelected = data.unitSelected,
+    this.schedules = data.schedules
+  }
+
+  unitSelected: string = ''
+  schedules: ISchedule[] = []
   
   students$: Observable<any[]> = this.allStudents.fetchUsers
   studentsFiltered$: Observable<any[]> = this.students$.pipe(
@@ -85,16 +91,16 @@ export class ScheduleModalComponent {
   //   });
   // }
 
-  private setAssociatedTeachers(): void {
-    this.associateService.teachersAssociate.subscribe({
-      next: (teachers: any[]) => this.teachers = teachers,
-      error: () => this.teachers = []
-    });
-  }
+  // private setAssociatedTeachers(): void {
+  //   this.associateService.teachersAssociate.subscribe({
+  //     next: (teachers: any[]) => this.teachers = teachers,
+  //     error: () => this.teachers = []
+  //   });
+  // }
 
   private setHiredTeachers(): void {
     this.hiredService.teachersHired.subscribe({
-      next: (teachers: any[]) => this.teachers = teachers,
+      next: (teachers: any[]) => this.teachers = teachers.filter((t) => t.unit === this.unitSelected),
       error: () => this.teachers = []
     });
   }
@@ -106,8 +112,8 @@ export class ScheduleModalComponent {
     }
 
     const payload = this.formSchedules.value;
-    let teacherSchedules: ISchedule[] = this.data.filter((schedule: ISchedule) => schedule.teacher.name == payload.teacher);
-    let studentSchedules: ISchedule[] = this.data.filter((schedule: ISchedule) => schedule.student == payload.student && schedule.date == payload.date)
+    let teacherSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.teacher.name == payload.teacher);
+    let studentSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.student == payload.student && schedule.date == payload.date)
 
     const selectedDate: Date = new Date(payload.date)
     

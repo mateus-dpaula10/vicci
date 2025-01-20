@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, query, where } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, query, updateDoc, where } from '@angular/fire/firestore';
 import { Observable, map } from 'rxjs';
 
 @Injectable({
@@ -15,8 +15,12 @@ export class SchedulesService {
   }
 
   create(payload: any) {
-
     return addDoc(this.scheduleCollection, payload)
+  }
+
+  update(id: any, payload: any) {
+    const scheduleRef = doc(this.scheduleCollection, id)
+    return updateDoc(scheduleRef, payload)
   }
 
   delete(id: any) {

@@ -19,9 +19,9 @@
     <td mat-cell *matCellDef="let element"> {{element.schedules}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="selected_units">
+  <ng-container matColumnDef="unit">
     <th mat-header-cell *matHeaderCellDef> Unidades </th>
-    <td mat-cell *matCellDef="let element"> {{element.selected_units}} </td>
+    <td mat-cell *matCellDef="let element"> {{element.unit}} </td>
   </ng-container>
 
   <ng-container matColumnDef="expand">
@@ -58,20 +58,19 @@
               <input matInput placeholder="Horário" #schedules="ngModel" [ngModel]="element.schedules" name="schedules"
                 autocomplete="off">
             </mat-form-field>
-            <div class="units">
+            <mat-form-field>
               <mat-label>Unidades</mat-label>
-              <div class="units-checkbox">
+              <mat-select #unit="ngModel" [ngModel]="element.unit" name="unit">
                 @for (unit of units; track unit) {
-                  <div>
-                    <input type="checkbox" [id]="unit.name" [value]="unit.name" #selected_units="ngModel" [ngModel]="element.selected_units">
-                    <label [for]="unit.name">{{ unit.name }}</label>
-                  </div>
+                  <mat-option [value]="unit.name">
+                    {{ unit.name }}
+                  </mat-option>                  
                 }
-              </div>
-            </div>
+              </mat-select>
+            </mat-form-field>   
           </div>
           <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
-          <vicci-button accent (click)="onSubmit(element.id, name, expertise, schedules, units)">Salvar</vicci-button>
+          <vicci-button accent (click)="onSubmit(element.id, name, expertise, schedules, unit)">Salvar</vicci-button>
         </form>
       </div>
     </td>

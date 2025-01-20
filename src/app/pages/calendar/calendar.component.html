@@ -42,16 +42,15 @@
                     }
                     <div class="schedules">
                         @for(class of day.classesByTeacher; track class){
-                        <div class="class" [ngStyle]="{'background-color':  class.color}">
-                            {{class.classesCount}}
-                        </div>
+                            <div class="class" [ngStyle]="{'background-color':  class.color}">
+                                {{class.classesCount}}
+                            </div>
                         }
                     </div>
                 </div>
                 }
             </div>
-            <div class="mainLabel">
-    
+            <div class="mainLabel">    
                 <div class="labels">
                     <div class="titleLabel">Professores contratados</div>
                     @for(teacher of teachersH; track teacher){
@@ -60,14 +59,7 @@
                         </div>
                     }
                 </div>
-                <!-- <div class="labels">
-                    <div class="titleLabel">Professores associados</div>
-                    @for(teacher of teachersA; track teacher){
-                        <div class="label">
-                            <div class="class" [ngStyle]="{'background-color':  teacher.color}"></div>{{teacher.name}}
-                        </div>
-                    }
-                </div> -->
+
                 <div class="button">
                     <vicci-button accent (click)="openDialog()">Adicionar agenda</vicci-button>
                 </div>

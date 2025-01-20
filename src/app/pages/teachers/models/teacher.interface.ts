@@ -1,4 +1,5 @@
 export interface ITeacher {
     name: string,
-    color: string
+    color: string,
+    unit: string
 }

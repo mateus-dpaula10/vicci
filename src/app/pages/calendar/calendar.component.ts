@@ -47,7 +47,12 @@ export class CalendarComponent {
   showCalendar: boolean = false
 
   openDialog(): void {
-    this.dialog.open(ScheduleModalComponent, { data: this.schedules });
+    this.dialog.open(ScheduleModalComponent, { 
+      data: {
+        schedules: this.schedules,
+        unitSelected: this.formSelectedUnit.get('unit')?.value,
+      }
+    })
   }
 
   async ngOnInit() {
@@ -72,35 +77,58 @@ export class CalendarComponent {
     }
 
     this.showCalendar = true
-
     const currentDate = new Date();
     this.currentMonth = currentDate.getMonth();
     this.currentYear = currentDate.getFullYear();
-    this.teachersH = (await this.loadHiredTeachers()).map(name => ({ name: name, color: this.generateRandomColor() }));; // Carregar os professores contratados ao inicializar o componente
-    // this.teachersA = (await this.loadAssociateTeachers()).map(name => ({ name: name, color: this.generateRandomColor() }));
-    let count = 0;
-    this.getSchedules.subscribe((res: any) => {
-      if (count > 0) return;
-      count++;
-      this.schedules = res.map((schedule: any) => {
-        const teacherDetails = this.findTeacher(schedule.teacher, this.teachersH);
-        if (teacherDetails) {
-          return { ...schedule, teacher: teacherDetails, unit: this.formSelectedUnit.get('unit') };
-        }
-        return schedule;
-      });
 
-      this.splitSchedules();
-    });
+    try {
+      this.hiredService.teachersHired.subscribe(async (res) => {
+        const teacherNames = await this.loadHiredTeachers()
+        this.teachersH = teacherNames
+          .map(name => ({
+            name: name,
+            color: this.generateRandomColor(),
+            unit: res.find((t) => t.name === name)?.unit
+          }))
+          .filter((t) => t.unit === this.formSelectedUnit.get('unit')?.value)
+      })
+    } catch (error) {
+      console.error('Erro ao carregar os professores contratados:', error)
+    }    
+
+    const selectedUnit = this.formSelectedUnit.get('unit')?.value
+    
+    let count = 0
+
+    this.getSchedules.subscribe((res: any) => {
+      if (count > 0) return
+      count++
+
+      this.schedules = res
+        .map((schedule: any) => {
+          const teacherDetails = this.findTeacher(schedule.teacher, this.teachersH)
+          if (teacherDetails) {
+            return { ...schedule, teacher: teacherDetails }
+          }
+          return schedule
+        })
+        .filter((schedule: any) => {
+          return schedule.teacher?.unit === selectedUnit
+        })
+
+        this.splitSchedules()
+    })
+
     this.calculateDaysOfMonth(this.currentMonth, this.currentYear);
   }
 
-  loadHiredTeachers(): Promise<[]> {
-    return new Promise((resolve: any) => {
-      this.hiredService.getFieldNames('name').subscribe(names => {
-        return resolve(names);
+  loadHiredTeachers(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.hiredService.getFieldNames('name').subscribe({
+        next: (names) => resolve(names),
+        error: (err) => reject(err)
       });
-    })
+    });
   }
 
   // loadAssociateTeachers(): Promise<[]> {
@@ -219,7 +247,7 @@ export class CalendarComponent {
         const index = response.findIndex((object: any) => object.teacher === schedule.teacher.name);
         response[index].classesCount += 1;
       } else {
-        response.push({ teacher: schedule.teacher.name, classesCount: 1, color: schedule.teacher.color })
+        response.push({ teacher: schedule.teacher.name, classesCount: 1, color: schedule.teacher.color, unit: schedule.teacher.unit })
       }
 
     })

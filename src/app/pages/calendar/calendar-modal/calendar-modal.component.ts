@@ -47,4 +47,19 @@ export class CalendarModalComponent implements OnInit {
         .catch(() => this.snackbar.open("Erro ao excluir", ))
     })
   }
+
+  onSubmit(schedule: any) {
+    this.dialog.open(ScheduleModalComponent, { 
+      data: {
+        schedules: schedule,
+      }
+    })
+
+    // this.schedulesService.update(id, {
+    //   teacher: teacher.value,
+    //   date: date.value
+    // })
+    //   .then(() => this.snackbar.open("Horário atualizado"))
+    //   .catch(() => this.snackbar.open("Erro ao atualizar"));
+  }
 }

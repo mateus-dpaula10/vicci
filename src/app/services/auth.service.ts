@@ -74,6 +74,7 @@ export class AuthService {
       if (password) {
         hashedPassword = await bcrypt.hash(password, 10)
       } else {
+        // quando o admin aprova o invite, ja cadastra na tabela usuarios
         hashedPassword = await bcrypt.hash('password', 10)
         guest = 'Sim'
       }
@@ -84,7 +85,7 @@ export class AuthService {
         password: hashedPassword,
         status: 'Pendente',
         role: null,
-        studentConvidated: guest,
+        studentConvidated: guest || 'Não',
         createdAt: new Date()
       })
       this.snackbar.open("Cadastro realizado com sucesso. Aguarde aprovação!", 'Fechar', { duration: 3000 })

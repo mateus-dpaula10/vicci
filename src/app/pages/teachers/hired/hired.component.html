@@ -1,8 +1,10 @@
 <h1>Professores contratados</h1>
 
-<vicci-button (click)="openDialog()" accent> Cadastrar professor contratado</vicci-button>
+<!-- @if (user.role === 'Administrador' || user.role === 'Gerente') {
+  <vicci-button (click)="openDialog()" accent> Cadastrar professor contratado</vicci-button>
+} -->
 
-<table mat-table [dataSource]="hired$" multiTemplateDataRows class="mat-elevation-z8">
+<table mat-table [dataSource]="hiredFiltered$" multiTemplateDataRows class="mat-elevation-z8">
 
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef> Nome </th>
@@ -51,16 +53,16 @@
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Nome</mat-label>
               <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
-                autocomplete="off">
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente' && user.email !== element.email">
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Especialidade</mat-label>
               <input matInput placeholder="Especialidade" #expertise="ngModel" [ngModel]="element.expertise"
-                name="expertise" autocomplete="off">
+                name="expertise" autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente' && user.email !== element.email">
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Horário</mat-label>
-              <mat-select #schedules="ngModel" [ngModel]="element.schedules" name="schedules" multiple>
+              <mat-select #schedules="ngModel" [ngModel]="element.schedules" name="schedules" multiple [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente' && user.email !== element.email">
                 @for (time of timeRange; track time) {
                   <mat-option [value]="time">
                     {{ time }}
@@ -70,7 +72,7 @@
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Dia da semana</mat-label>
-              <mat-select #weekday="ngModel" [ngModel]="element.weekday" name="weekday" multiple>
+              <mat-select #weekday="ngModel" [ngModel]="element.weekday" name="weekday" multiple [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente' && user.email !== element.email">
                 @for (day of daysOfWeek; track day) {
                   <mat-option [value]="day">
                     {{ day }}
@@ -80,7 +82,7 @@
             </mat-form-field>
             <mat-form-field>
               <mat-label>Unidades</mat-label>
-              <mat-select #unit="ngModel" [ngModel]="element.unit" name="unit" multiple>
+              <mat-select #unit="ngModel" [ngModel]="element.unit" name="unit" multiple [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente' && user.email !== element.email">
                 @for (unit of units; track unit) {
                   <mat-option [value]="unit.name">
                     {{ unit.name }}
@@ -89,8 +91,12 @@
               </mat-select>
             </mat-form-field>   
           </div>
-          <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
-          <vicci-button accent (click)="onSubmit(element.id, name, expertise, weekday, schedules, unit)">Salvar</vicci-button>
+          @if (user.role === 'Administrador' || user.role === 'Gerente' || user.email === element.email) {
+            <vicci-button accent (click)="onSubmit(element.id, name, expertise, weekday, schedules, unit)">Salvar</vicci-button>
+          }
+          @if (user.role === 'Administrador' || user.role === 'Gerente') {
+            <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+          }
         </form>
       </div>
     </td>

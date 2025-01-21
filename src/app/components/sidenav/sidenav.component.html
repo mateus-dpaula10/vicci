@@ -5,47 +5,47 @@
         </a>
     </div>
     <nav class="sidenav-itens">
-        <a class="item" routerLink="/dashboard">
-            Dashboard
-        </a>
-        <a class="item" routerLink="/feedback">
-            Feedback
-        </a>
-        <a class="item" routerLink="/invite" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Aluno'">
-            Invite
-        </a>
-        <a class="item" routerLink="/users">
-            Usuários
-        </a>
         <a class="item" routerLink="/register">
             Alunos
-        </a>
-        <a class="item" routerLink="/teachers" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Recepcionista' || user.role === 'Aluno'">
-            Professores
-        </a>
-        <a class="item" routerLink="/equipments">
-            Equipamentos
-        </a>
-        <a class="item" routerLink="/units">
-            Unidades
-        </a>
-        <a class="item" routerLink="/plans" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Recepcionista'">
-            Planos
         </a>
         <a class="item" routerLink="/calendar">
             Calendário
         </a>
-        <a class="item" routerLink="/restaurant">
-            Restaurante
-        </a>
-        <a class="item" routerLink="/employees" *ngIf="user.role === 'Administrador' || user.role === 'Gerente'">
-            Funcionários
+        <a class="item" routerLink="/dashboard">
+            Dashboard
         </a>
         <a class="item" routerLink="/performance">
             Desempenho
         </a>
+        <a class="item" routerLink="/equipments">
+            Equipamentos
+        </a>
+        <a class="item" routerLink="/feedback">
+            Feedback
+        </a>
+        <a class="item" routerLink="/employees" *ngIf="user.role === 'Administrador' || user.role === 'Gerente'">
+            Funcionários
+        </a>
+        <a class="item" routerLink="/invite" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Aluno'">
+            Invite
+        </a>
+        <a class="item" routerLink="/plans" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Recepcionista'">
+            Planos
+        </a>
+        <a class="item" routerLink="/teachers">
+            Professores
+        </a>
+        <a class="item" routerLink="/restaurant">
+            Restaurante
+        </a>
         <a class="item" routerLink="/training">
             Treinos
+        </a>
+        <a class="item" routerLink="/units">
+            Unidades
+        </a>
+        <a class="item" routerLink="/users">
+            Usuários
         </a>
         <mat-icon aria-hidden="false" aria-label="logout" fontIcon="logout" (click)="onLogout()" class="logout">Sair</mat-icon>
     </nav>

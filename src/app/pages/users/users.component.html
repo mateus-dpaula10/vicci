@@ -101,7 +101,7 @@
                 <mat-form-field subscriptSizing="dynamic">
                     <mat-label>Aluno convidado</mat-label>
                     <input matInput placeholder="Aluno convidado" #studentConvidated="ngModel" [ngModel]="element.studentConvidated ? element.studentConvidated : 'Não'" name="studentConvidated"
-                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador'">
+                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador'" [readonly]="true">
                 </mat-form-field>
             </div>
             @if (currentUser.role === 'Administrador') {

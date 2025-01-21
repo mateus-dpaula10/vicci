@@ -1,5 +1,5 @@
 import { NgStyle } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { ButtonComponent } from '../../components/utils/button/button.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarModalComponent } from './calendar-modal/calendar-modal.component';
@@ -7,7 +7,7 @@ import { HiredService } from '../teachers/hired/hired.service';
 import { AssociateService } from '../teachers/associate/associate.service';
 import { ScheduleModalComponent } from './schedule-modal/schedule-modal.component';
 import { SchedulesService } from './schedules.service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ITeacher } from '../teachers/models/teacher.interface';
 import { ISchedule } from './models/schedule.interface';
 import { UnitServiceService } from '../units/unit-service.service';
@@ -17,6 +17,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-calendar',
@@ -30,6 +31,7 @@ export class CalendarComponent {
 
   private dialog = inject(MatDialog);
   private hiredService = inject(HiredService);
+  private usersService = inject(AuthService)
   private associateService = inject(AssociateService);
   private schedulesService = inject(SchedulesService);
   private getSchedules: Observable<any> = this.schedulesService.schedules;
@@ -82,7 +84,7 @@ export class CalendarComponent {
     this.currentYear = currentDate.getFullYear();
 
     try {
-      this.hiredService.teachersHired.subscribe(async (res) => {
+      this.usersService.fetchUsers.subscribe(async (res) => {
         const teacherNames = await this.loadHiredTeachers()
 
         this.teachersH = teacherNames

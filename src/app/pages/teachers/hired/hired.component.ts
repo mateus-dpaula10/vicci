@@ -15,6 +15,8 @@ import { UnitServiceService } from '../../units/unit-service.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { AuthService } from '../../../services/auth.service';
+import { map, Observable } from 'rxjs';
 
 @Component({  
   selector: 'hired',
@@ -48,10 +50,14 @@ export class  HiredComponent {
   private hiredService = inject(HiredService);
   private snackbar = inject(MatSnackBar);
   private unitService = inject(UnitServiceService);
+  private usersService = inject(AuthService)
 
-  hired$ = this.hiredService.teachersHired;
+  hired$: Observable<any[]> = this.usersService.fetchUsers
+  hiredFiltered$: Observable<any[]> = this.hired$.pipe(
+    map(items => items.filter(item => item.role === 'Instrutor'))
+  )
 
-  displayedColumns: string[] = ['name', 'expertise', 'schedules'];
+  displayedColumns: string[] = ['name', 'expertise', 'schedules', 'unit'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
@@ -76,8 +82,9 @@ export class  HiredComponent {
     '20:00',
     '21:00',
     '22:00'
-    ]
+  ]
   daysOfWeek: string[] = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
+  user: any | null = null
 
   async ngOnInit() {
     this.unitService.units.subscribe({
@@ -88,6 +95,17 @@ export class  HiredComponent {
         console.error(err)
       }
     })
+    
+    this.loadUser()
+  }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.user = await this.usersService.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.user = null
+    }
   }
 
   openDialog(): void {
@@ -110,7 +128,7 @@ export class  HiredComponent {
       unit: unit.value
     }
 
-    this.hiredService.update(id, payload)
+    this.usersService.update(id, payload)
       .then(() => this.snackbar.open("Professor contratado atualizado"))
       .catch(() => this.snackbar.open("Erro ao atualizar"))
   }

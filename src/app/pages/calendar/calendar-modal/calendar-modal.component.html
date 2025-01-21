@@ -18,9 +18,10 @@
                             <div class="scheduleTeacher">
                                 Aluno: {{schedule.student}}
                             </div>
+                            <button (click)="openDialog(schedule)">Editar</button>
                             <button (click)="onDelete(schedule.id)">Excluir</button>
                         </div>
-                    }
+                    }   
                 </div>
             }
         </div>

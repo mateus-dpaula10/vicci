@@ -1,9 +1,10 @@
 import { NgStyle } from '@angular/common';
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, Input, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { SchedulesService } from '../schedules.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScheduleModalComponent } from '../schedule-modal/schedule-modal.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-calendar-modal',
@@ -16,6 +17,7 @@ export class CalendarModalComponent implements OnInit {
   private dialog = inject(MatDialog)
   private schedulesService = inject(SchedulesService)
   private snackbar = inject(MatSnackBar);
+  private usersService = inject(AuthService)
 
   hoursDay: { hours: number, schedules: any[] }[] = [];
 
@@ -33,6 +35,14 @@ export class CalendarModalComponent implements OnInit {
       const calendarHour: any = this.hoursDay.find(hour => hour.hours == scheduleHour);
       calendarHour.schedules.push(schedule);
     });
+  }
+
+  openDialog(schedule: any): void { 
+    this.dialog.open(ScheduleModalComponent, { 
+      data: {
+        schedule: schedule
+      }
+    })
   }
 
   onDelete(id: any) {

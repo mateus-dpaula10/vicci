@@ -9,6 +9,7 @@ export class HiredService {
 
   private firestore: Firestore = inject(Firestore);
   teacherHiredCollection = collection(this.firestore, 'teachersHired');
+  usersAll = collection(this.firestore, 'users')
 
   get teachersHired() {
     return collectionData(this.teacherHiredCollection, { idField: 'id' }) as Observable<any[]>;
@@ -29,7 +30,10 @@ export class HiredService {
   }
 
   getFieldNames(fieldName: string): Observable<string[]> {
-    const queryRef = query(this.teacherHiredCollection, where(fieldName, '!=', null));
+    const queryRef = query(this.usersAll, 
+      where(fieldName, '!=', null),
+      where('role', '==', 'Instrutor'),
+    );
     return collectionData(queryRef, { idField: 'id' }).pipe(
       map(teachers => teachers.map(teacher => teacher[fieldName]))
     );

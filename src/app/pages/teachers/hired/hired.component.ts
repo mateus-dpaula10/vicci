@@ -37,12 +37,13 @@ import { MatOptionModule } from '@angular/material/core';
     MatCheckboxModule,
     MatSelectModule, 
     MatOptionModule,
-    CommonModule
+    CommonModule,
+    MatSelectModule
   ],
   templateUrl: './hired.component.html',
   styleUrl: './hired.component.scss'
 })
-export class HiredComponent {
+export class  HiredComponent {
   private dialog = inject(MatDialog);
   private hiredService = inject(HiredService);
   private snackbar = inject(MatSnackBar);
@@ -50,12 +51,33 @@ export class HiredComponent {
 
   hired$ = this.hiredService.teachersHired;
 
-  displayedColumns: string[] = ['name', 'expertise', 'schedules', 'unit'];
+  displayedColumns: string[] = ['name', 'expertise', 'schedules'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
 
   units: any[] = []
+
+  timeRange: string[] = [
+    '06:00',
+    '07:00',
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00',
+    '22:00'
+    ]
+  daysOfWeek: string[] = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
 
   async ngOnInit() {
     this.unitService.units.subscribe({
@@ -79,10 +101,11 @@ export class HiredComponent {
     })
   }
 
-  onSubmit(id: any, name: any, expertise: any, schedules: any, unit: any) {
+  onSubmit(id: any, name: any, expertise: any, weekday: any, schedules: any, unit: any) {
     const payload = {
       name: name.value,
       expertise: expertise.value,
+      weekday: weekday.value,
       schedules: schedules.value,
       unit: unit.value
     }

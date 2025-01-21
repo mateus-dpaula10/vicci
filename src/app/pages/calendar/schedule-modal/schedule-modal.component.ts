@@ -43,9 +43,10 @@ export class ScheduleModalComponent {
   teachers: any[] = [];
   formSchedules: FormGroup = this.fb.group({
     student: [[], Validators.required],
-    listRole: [ListRole.ASSOCIATES],
+    // listRole: [ListRole.ASSOCIATES],
     teacher: [[], Validators.required],
     date: [[], Validators.required],
+    schedule: [[], Validators.required],
   });
   user: any | null = null
 
@@ -65,6 +66,8 @@ export class ScheduleModalComponent {
     map(items => items.filter(item => item.role === 'Aluno'))
   )
   schedulesTeacherDate: any
+  selectedTeacher: any = null
+  availableDates: any[] = []
 
   async ngOnInit(): Promise<void> {
     // this.setSubscriber()
@@ -98,11 +101,59 @@ export class ScheduleModalComponent {
   //   });
   // }
 
+  getDatesForWeekdays(weekdays: string[], year: number, month: number): Date[] {
+    const dates: Date[] = []
+    
+    const daysOfWeekMap: { [key: string]: number } = {
+      'Domingo': 0,
+      'Segunda-feira': 1,
+      'Terça-feira': 2,
+      'Quarta-feira': 3,
+      'Quinta-feira': 4,
+      'Sexta-feira': 5,
+      'Sábado': 6
+    }
+
+    const daysOfWeek = weekdays.map(day => daysOfWeekMap[day])
+    
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day)
+
+      if (daysOfWeek.includes(date.getDay())) {
+        dates.push(date)
+      }
+    }
+
+    return dates
+  }
+
   private setHiredTeachers(): void {
     this.hiredService.teachersHired.subscribe({
-      next: (teachers: any[]) => this.teachers = teachers.filter((t) => t.unit === this.unitSelected),
+      next: (teachers: any[]) => {
+        this.teachers = teachers
+          .filter((t) => Array.isArray(t.unit) && t.unit.includes(this.unitSelected))
+          .map((teacher) => ({
+            ...teacher,
+            weekday: teacher.weekday || [],
+            schedules: teacher.schedules || [],
+          }))
+      },
       error: () => this.teachers = []
     });
+  }
+
+  onTeacherChange(teacherName: string): void {
+    this.selectedTeacher = this.teachers.find((t) => t.name === teacherName)
+
+    if (this.selectedTeacher) {
+      const currentDate = new Date()
+      const year = currentDate.getFullYear()
+      const month = currentDate.getMonth()
+
+      this.availableDates = this.getDatesForWeekdays(this.selectedTeacher.weekday, year, month)
+    }
   }
 
   onSubmit(): void {
@@ -111,22 +162,18 @@ export class ScheduleModalComponent {
       return
     }
 
-    const payload = this.formSchedules.value;
-    let teacherSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.teacher.name == payload.teacher);
-    let studentSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.student == payload.student && schedule.date == payload.date)
+    const payload = this.formSchedules.value
+    
+    let teacherSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.teacher.name == payload.teacher && schedule.date == payload.date && schedule.schedule == payload.schedule)
+    let studentSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.student == payload.student && schedule.date == payload.date && schedule.schedule == payload.schedule)
 
     const selectedDate: Date = new Date(payload.date)
     
-    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getFullYear() == selectedDate.getFullYear());
-    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getMonth() == selectedDate.getMonth());
-    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getDate() == selectedDate.getDate());
-    teacherSchedules = teacherSchedules.filter((schedule: ISchedule) => new Date(schedule.date).getHours() == selectedDate.getHours());
-    
     if (teacherSchedules.length >= 2) {
-      this.snackbar.open(`Quantidade de aulas do(a) professor(a) ${payload.teacher} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.date.substring(11, 16)}`)
+      this.snackbar.open(`Quantidade de aulas do(a) professor(a) ${payload.teacher} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.schedule}`)
       return
     } else if (studentSchedules.length >= 1) {
-      this.snackbar.open(`Quantidade de aulas do(a) aluno(a) ${payload.student} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.date.substring(11, 16)}`) 
+      this.snackbar.open(`Quantidade de aulas do(a) aluno(a) ${payload.student} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.schedule}`) 
       return
     }
 

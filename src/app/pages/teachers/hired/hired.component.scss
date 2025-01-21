@@ -49,6 +49,7 @@ table {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 1rem;
+                align-items: flex-start;
 
                 mat-form-field {
                     width: 100%;

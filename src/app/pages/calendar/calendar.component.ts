@@ -84,13 +84,18 @@ export class CalendarComponent {
     try {
       this.hiredService.teachersHired.subscribe(async (res) => {
         const teacherNames = await this.loadHiredTeachers()
+
         this.teachersH = teacherNames
-          .map(name => ({
-            name: name,
-            color: this.generateRandomColor(),
-            unit: res.find((t) => t.name === name)?.unit
-          }))
-          .filter((t) => t.unit === this.formSelectedUnit.get('unit')?.value)
+          .map((name) => {
+            const teacherData = res.find((t) => t.name === name)
+            
+            return {
+              name: name,
+              color: this.generateRandomColor(),
+              unit: teacherData?.unit || []
+            }
+          })
+          .filter((t) => t.unit.includes(this.formSelectedUnit.get('unit')?.value))
       })
     } catch (error) {
       console.error('Erro ao carregar os professores contratados:', error)
@@ -113,7 +118,7 @@ export class CalendarComponent {
           return schedule
         })
         .filter((schedule: any) => {
-          return schedule.teacher?.unit === selectedUnit
+          return Array.isArray(schedule.teacher?.unit) && schedule.teacher?.unit.includes(selectedUnit)
         })
 
         this.splitSchedules()

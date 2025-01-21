@@ -29,7 +29,7 @@ export class CalendarModalComponent implements OnInit {
 
   insertScheduleByHour() {
     this.data.schedules.forEach((schedule: any) => {
-      const scheduleHour = parseInt(schedule.date.split('T')[1].split(':')[0])
+      const scheduleHour = parseInt(schedule.schedule)
       const calendarHour: any = this.hoursDay.find(hour => hour.hours == scheduleHour);
       calendarHour.schedules.push(schedule);
     });
@@ -46,20 +46,5 @@ export class CalendarModalComponent implements OnInit {
         })
         .catch(() => this.snackbar.open("Erro ao excluir", ))
     })
-  }
-
-  onSubmit(schedule: any) {
-    this.dialog.open(ScheduleModalComponent, { 
-      data: {
-        schedules: schedule,
-      }
-    })
-
-    // this.schedulesService.update(id, {
-    //   teacher: teacher.value,
-    //   date: date.value
-    // })
-    //   .then(() => this.snackbar.open("Horário atualizado"))
-    //   .catch(() => this.snackbar.open("Erro ao atualizar"));
   }
 }

@@ -18,10 +18,10 @@ export class SchedulesService {
     return addDoc(this.scheduleCollection, payload)
   }
 
-  update(id: any, payload: any) {
-    const scheduleRef = doc(this.scheduleCollection, id)
-    return updateDoc(scheduleRef, payload)
-  }
+  // update(id: any, payload: any) {
+  //   const scheduleRef = doc(this.scheduleCollection, id)
+  //   return updateDoc(scheduleRef, payload)
+  // }
 
   delete(id: any) {
     const scheduleRef = doc(this.scheduleCollection, id)

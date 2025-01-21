@@ -14,8 +14,13 @@
     <td mat-cell *matCellDef="let element"> {{element.expertise}} </td>
   </ng-container>
 
+  <ng-container matColumnDef="weekday">
+    <th mat-header-cell *matHeaderCellDef> Dia da semana </th>
+    <td mat-cell *matCellDef="let element"> {{element.weekday}} </td>
+  </ng-container>
+
   <ng-container matColumnDef="schedules">
-    <th mat-header-cell *matHeaderCellDef> Horario </th>
+    <th mat-header-cell *matHeaderCellDef> Horário </th>
     <td mat-cell *matCellDef="let element"> {{element.schedules}} </td>
   </ng-container>
 
@@ -55,12 +60,27 @@
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Horário</mat-label>
-              <input matInput placeholder="Horário" #schedules="ngModel" [ngModel]="element.schedules" name="schedules"
-                autocomplete="off">
+              <mat-select #schedules="ngModel" [ngModel]="element.schedules" name="schedules" multiple>
+                @for (time of timeRange; track time) {
+                  <mat-option [value]="time">
+                    {{ time }}
+                  </mat-option>                  
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Dia da semana</mat-label>
+              <mat-select #weekday="ngModel" [ngModel]="element.weekday" name="weekday" multiple>
+                @for (day of daysOfWeek; track day) {
+                  <mat-option [value]="day">
+                    {{ day }}
+                  </mat-option>
+                }
+              </mat-select>
             </mat-form-field>
             <mat-form-field>
               <mat-label>Unidades</mat-label>
-              <mat-select #unit="ngModel" [ngModel]="element.unit" name="unit">
+              <mat-select #unit="ngModel" [ngModel]="element.unit" name="unit" multiple>
                 @for (unit of units; track unit) {
                   <mat-option [value]="unit.name">
                     {{ unit.name }}
@@ -70,7 +90,7 @@
             </mat-form-field>   
           </div>
           <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
-          <vicci-button accent (click)="onSubmit(element.id, name, expertise, schedules, unit)">Salvar</vicci-button>
+          <vicci-button accent (click)="onSubmit(element.id, name, expertise, weekday, schedules, unit)">Salvar</vicci-button>
         </form>
       </div>
     </td>

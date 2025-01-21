@@ -17,17 +17,32 @@
 
         <mat-form-field subscriptSizing="dynamic">
             <mat-label>Professor(a)</mat-label>
-            <mat-select matNativeControl formControlName="teacher" name="teacher" placeholder="Selecione">
+            <mat-select matNativeControl formControlName="teacher" name="teacher" placeholder="Selecione" (selectionChange)="onTeacherChange($event.value)">
                 @for (teacher of teachers; track teacher) {
-                <mat-option [value]="teacher.name">{{ teacher.name }}</mat-option>
+                    <mat-option [value]="teacher.name">{{ teacher.name }}</mat-option>
                 }
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field subscriptSizing="dynamic">
-            <mat-label>Data</mat-label>
-            <input matInput formControlName="date" type="datetime-local" id="date" placeholder="Insira a função">
-        </mat-form-field>
+        @if (selectedTeacher) {
+            <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Data disponível</mat-label>
+                <mat-select formControlName="date" name="date">
+                    @for (date of availableDates; track date) {
+                        <mat-option [value]="date.toISOString()">{{ date.toLocaleDateString('pt-BR') }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+    
+            <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Horário</mat-label>
+                <mat-select formControlName="schedule" name="schedule">
+                    @for (schedule of selectedTeacher.schedules; track schedule) {
+                        <mat-option [value]="schedule">{{ schedule }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        }
     </form>
 </mat-dialog-content>
 <mat-dialog-actions>

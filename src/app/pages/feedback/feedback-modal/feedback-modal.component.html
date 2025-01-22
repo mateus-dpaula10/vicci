@@ -6,9 +6,11 @@
             <mat-form-field appearance="fill">
                 <mat-label>Selecione um aluno</mat-label>
                 <mat-select id="student" formControlName="student">
-                    <mat-option *ngFor="let student of (studentsFiltered | async)" [value]="student.name">
-                        {{ student.name }}
-                    </mat-option>
+                    @for (student of students$ | async; track student) {
+                        <mat-option [value]="student.name">
+                            {{ student.name }}
+                        </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
         } @else {

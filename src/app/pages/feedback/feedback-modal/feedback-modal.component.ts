@@ -30,8 +30,7 @@ export class FeedbackModalComponent {
     public dialogRef: MatDialogRef<FeedbackModalComponent>,
   ) { }
 
-  students: Observable<any[]> = this.allUsers.fetchUsers
-  studentsFiltered: Observable<any[]> = this.students.pipe(
+  students$: Observable<any[]> = this.allUsers.fetchUsers.pipe(
     map(users => users.filter(user => user.role === 'Aluno'))
   )
 

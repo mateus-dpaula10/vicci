@@ -53,8 +53,7 @@ export class ScheduleModalComponent {
   unitSelected: string = ''
   schedules: ISchedule[] = []
   
-  students$: Observable<any[]> = this.allStudents.fetchUsers
-  studentsFiltered$: Observable<any[]> = this.students$.pipe(
+  students$: Observable<any[]> = this.allStudents.fetchUsers.pipe(
     map(items => items.filter(item => item.role === 'Aluno'))
   )
   schedulesTeacherDate: any

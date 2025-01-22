@@ -1,5 +1,5 @@
 import { NgStyle } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonComponent } from '../../components/utils/button/button.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarModalComponent } from './calendar-modal/calendar-modal.component';
@@ -7,7 +7,7 @@ import { HiredService } from '../teachers/hired/hired.service';
 import { AssociateService } from '../teachers/associate/associate.service';
 import { ScheduleModalComponent } from './schedule-modal/schedule-modal.component';
 import { SchedulesService } from './schedules.service';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable } from 'rxjs';
 import { ITeacher } from '../teachers/models/teacher.interface';
 import { ISchedule } from './models/schedule.interface';
 import { UnitServiceService } from '../units/unit-service.service';
@@ -29,12 +29,11 @@ import { AuthService } from '../../services/auth.service';
 export class CalendarComponent {
   daysOfMonth: { day: any, dayOfWeek: any, isCurrentMonth: boolean, schedules: any[], classesByTeacher: any[], firstDayIndex: any }[] = [];
 
-  private dialog = inject(MatDialog);
+  private dialog = inject(MatDialog); 
   private hiredService = inject(HiredService);
   private usersService = inject(AuthService)
   private associateService = inject(AssociateService);
   private schedulesService = inject(SchedulesService);
-  private getSchedules: Observable<any> = this.schedulesService.schedules;
   private unitService = inject(UnitServiceService);
   private fb = inject(FormBuilder)
   private snackbar = inject(MatSnackBar)
@@ -84,34 +83,31 @@ export class CalendarComponent {
     this.currentYear = currentDate.getFullYear();
 
     try {
-      this.usersService.fetchUsers.subscribe(async (res) => {
-        const teacherNames = await this.loadHiredTeachers()
+      const selectedUnit = this.formSelectedUnit.get('unit')?.value
+      
+      const combinedData = await firstValueFrom(
+        forkJoin({
+          users: this.usersService.fetchUsers,
+          schedules: this.schedulesService.schedules
+        })
+      )
 
-        this.teachersH = teacherNames
-          .map((name) => {
-            const teacherData = res.find((t) => t.name === name)
-            
-            return {
-              name: name,
-              color: this.generateRandomColor(),
-              unit: teacherData?.unit || []
-            }
-          })
-          .filter((t) => t.unit.includes(this.formSelectedUnit.get('unit')?.value))
-      })
-    } catch (error) {
-      console.error('Erro ao carregar os professores contratados:', error)
-    }    
+      const { users, schedules } = combinedData
 
-    const selectedUnit = this.formSelectedUnit.get('unit')?.value
-    
-    let count = 0
+      const teacherNames = await this.loadHiredTeachers()     
 
-    this.getSchedules.subscribe((res: any) => {
-      if (count > 0) return
-      count++
+      this.teachersH = teacherNames
+        .map((name) => {
+          const teacherData = users.find((t: any) => t.name === name)          
+          return {
+            name: name,
+            color: this.generateRandomColor(),
+            unit: teacherData?.unit || []
+          }
+        })
+        .filter((t) => t.unit.includes(selectedUnit))
 
-      this.schedules = res
+      this.schedules = schedules
         .map((schedule: any) => {
           const teacherDetails = this.findTeacher(schedule.teacher, this.teachersH)
           if (teacherDetails) {
@@ -123,10 +119,11 @@ export class CalendarComponent {
           return Array.isArray(schedule.teacher?.unit) && schedule.teacher?.unit.includes(selectedUnit)
         })
 
-        this.splitSchedules()
-    })
-
-    this.calculateDaysOfMonth(this.currentMonth, this.currentYear);
+      this.calculateDaysOfMonth(this.currentMonth, this.currentYear);
+      this.splitSchedules()
+    } catch (error) {
+      console.error('Erro ao carregar os professores contratados:', error)
+    }   
   }
 
   loadHiredTeachers(): Promise<string[]> {
@@ -227,8 +224,8 @@ export class CalendarComponent {
       this.currentMonth = 0;
       this.currentYear++;
     }
-    this.calculateDaysOfMonth(this.currentMonth, this.currentYear);
     this.splitSchedules();
+    this.calculateDaysOfMonth(this.currentMonth, this.currentYear);
   }
 
   previousMonth() {
@@ -237,8 +234,8 @@ export class CalendarComponent {
       this.currentMonth = 11;
       this.currentYear--;
     }
-    this.calculateDaysOfMonth(this.currentMonth, this.currentYear);
     this.splitSchedules();
+    this.calculateDaysOfMonth(this.currentMonth, this.currentYear);
   }
 
   currentMonthName(): string {

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, query, updateDoc, where } from '@angular/fire/firestore';
-import { Observable, map } from 'rxjs';
+import { Observable, map, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class SchedulesService {
   scheduleCollection = collection(this.firestore, 'schedules')
 
   get schedules() {
-    return collectionData(this.scheduleCollection, { idField: 'id' }) as Observable<any[]>;
+    return collectionData(this.scheduleCollection, { idField: 'id' }).pipe(take(1)) as Observable<any[]>;
   }
 
   create(payload: any) {

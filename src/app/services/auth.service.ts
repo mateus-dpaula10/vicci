@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { User } from '../modelos/User';
 import { v4 as uuidv4 } from 'uuid';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable({
@@ -20,9 +20,9 @@ export class AuthService {
   ) { }
   
   usersAll = collection(this.firestore, 'users')
-  
+
   get fetchUsers() {
-    return collectionData(this.usersAll, { idField: 'id' }) as Observable<any[]>;
+    return collectionData(this.usersAll, { idField: 'id' }).pipe(take(1)) as Observable<any[]>;
   }
 
   async login(email: string, password: string) {

@@ -273,6 +273,12 @@ export class CalendarComponent {
   }
 
   openDay(dayData: any) {
-    this.dialog.open(CalendarModalComponent, { data: dayData })
+    this.dialog.open(CalendarModalComponent, { 
+      data: { 
+        dayData: dayData, 
+        unitSelected: this.formSelectedUnit.get('unit')?.value,
+        schedules: this.schedules,
+      }
+    })
   }
 }

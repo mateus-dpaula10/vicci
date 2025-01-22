@@ -30,7 +30,7 @@ export class CalendarModalComponent implements OnInit {
   }
 
   insertScheduleByHour() {
-    this.data.schedules.forEach((schedule: any) => {
+    this.data.dayData.schedules.forEach((schedule: any) => {
       const scheduleHour = parseInt(schedule.schedule)
       const calendarHour: any = this.hoursDay.find(hour => hour.hours == scheduleHour);
       calendarHour.schedules.push(schedule);
@@ -40,7 +40,9 @@ export class CalendarModalComponent implements OnInit {
   openDialog(schedule: any): void { 
     this.dialog.open(ScheduleModalComponent, { 
       data: {
-        schedule: schedule
+        schedule: schedule,
+        unitSelected: this.data.unitSelected,
+        schedules: this.data.schedules
       }
     })
   }

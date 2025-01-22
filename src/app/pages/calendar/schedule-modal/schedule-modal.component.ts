@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective } from 'ngx-mask';
 import { ButtonComponent } from '../../../components/utils/button/button.component';
 import { MatRadioModule } from '@angular/material/radio';
@@ -17,7 +17,6 @@ import { ISchedule } from '../models/schedule.interface';
 import { map, Observable } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { ITeacher } from '../../teachers/models/teacher.interface';
 
 enum ListRole {
   ASSOCIATES,
@@ -43,29 +42,7 @@ export class ScheduleModalComponent {
     public dialogRef: MatDialogRef<ScheduleModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder
-  ) {    
-    if (data.schedule) {
-      this.isEditMode = true
-      this.formSchedules = this.fb.group({
-        student: [this.data.schedule.student || '', Validators.required],
-        // listRole: [ListRole.ASSOCIATES],
-        teacher: [this.data.schedule.teacher?.name, Validators.required],
-        date: [this.data.schedule.date, Validators.required],
-        schedule: [this.data.schedule.schedule, Validators.required],
-      })
-    } else {
-      this.unitSelected = data.unitSelected,
-      this.schedules = data.schedules
-      this.isEditMode = false
-      this.formSchedules = this.fb.group({
-        student: ['', Validators.required],
-        // listRole: [ListRole.ASSOCIATES],
-        teacher: ['', Validators.required],
-        date: ['', Validators.required],
-        schedule: ['', Validators.required],
-      })
-    }    
-  }
+  ) { }
 
   isEditMode: boolean = false
   formSchedules: FormGroup
@@ -89,6 +66,25 @@ export class ScheduleModalComponent {
     // this.setAssociatedTeachers()
     this.setHiredTeachers()
     this.loadUser()
+
+    this.unitSelected = this.data.unitSelected,
+    this.schedules = this.data.schedules
+    this.formSchedules = this.fb.group({
+      student: [this.data.schedule?.student || '', Validators.required],
+      // listRole: [ListRole.ASSOCIATES],
+      teacher: [this.data.schedule?.teacher?.name || '', Validators.required],
+      date: [this.data.schedule?.date || '', Validators.required],
+      schedule: [this.data.schedule?.schedule || '', Validators.required],
+    })  
+
+    const initialTeacher = this.formSchedules.get('teacher')?.value
+    if (initialTeacher) {
+      this.onTeacherChange(initialTeacher)
+    }
+
+    this.formSchedules.get('teacher')?.valueChanges.subscribe((value) => {
+      this.onTeacherChange(value)
+    });
   }
 
   async loadUser(): Promise<void> {
@@ -179,9 +175,21 @@ export class ScheduleModalComponent {
 
     const payload = this.formSchedules.value
 
-    if (this.isEditMode) {
-      payload.id = this.data.schedule.id
+    const teacherSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.teacher.name == payload.teacher && schedule.date == payload.date && schedule.schedule == payload.schedule)
+    const studentSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.student == payload.student && schedule.date == payload.date && schedule.schedule == payload.schedule)
 
+    const selectedDate: Date = new Date(payload.date)
+    
+    if (teacherSchedules.length >= 2) {
+      this.snackbar.open(`Quantidade de aulas do(a) professor(a) ${payload.teacher} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.schedule}`)
+      return
+    } else if (studentSchedules.length >= 1) {
+      this.snackbar.open(`Quantidade de aulas do(a) aluno(a) ${payload.student} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.schedule}`) 
+      return
+    }
+
+    if (this.data.schedule) {
+      payload.id = this.data.schedule.id
       this.schedulesService.update(payload.id, payload)
         .then((result) => {
           this.snackbar.open("Horário atualizado com sucesso");
@@ -189,19 +197,6 @@ export class ScheduleModalComponent {
         })
         .catch(() => this.snackbar.open("Erro ao atualizar horário"));
     } else {    
-      const teacherSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.teacher.name == payload.teacher && schedule.date == payload.date && schedule.schedule == payload.schedule)
-      const studentSchedules: ISchedule[] = this.data.schedules.filter((schedule: ISchedule) => schedule.student == payload.student && schedule.date == payload.date && schedule.schedule == payload.schedule)
-
-      const selectedDate: Date = new Date(payload.date)
-      
-      if (teacherSchedules.length >= 2) {
-        this.snackbar.open(`Quantidade de aulas do(a) professor(a) ${payload.teacher} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.schedule}`)
-        return
-      } else if (studentSchedules.length >= 1) {
-        this.snackbar.open(`Quantidade de aulas do(a) aluno(a) ${payload.student} excedida em ${selectedDate.toLocaleDateString('pt-BR')} - ${payload.schedule}`) 
-        return
-      }
-
       this.schedulesService.create(payload)
         .then((result) => {
           this.snackbar.open("Horário adicionado com sucesso");

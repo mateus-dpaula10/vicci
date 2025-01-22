@@ -74,6 +74,15 @@ export class TrainingComponent {
     })
   }
 
+  onSubmit(training: any) {
+    this.dialog.open(TrainingModalComponent, { 
+      data: { 
+        student: this.formSelectStudent.value,
+        training: training
+      }
+    });
+  }
+
   onDelete(id: any) {
     const snackbarRef = this.snackbar.open("Deseja excluir treino?", "Excluir")
     snackbarRef.onAction().subscribe(() => {

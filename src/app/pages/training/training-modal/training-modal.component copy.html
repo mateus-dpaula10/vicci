@@ -28,10 +28,11 @@
                     <mat-label>Duração</mat-label>
                     <input matInput formControlName="duration" type="time" id="duration" placeholder="Duração do exercício">
                 </mat-form-field>
+
                 <vicci-button accent (click)="saveExercise()">Salvar</vicci-button>
             </form>
         }
-        
+
         @if (!data.training) {
             <div class="exercises">
                 @for (exercise of exercisesArray; track exercise) {
@@ -57,7 +58,7 @@
                         <vicci-button warn (click)="onDelete(exercise)"> Excluir </vicci-button>    
                     </div>
                 }
-            </div>        
+            </div>
         } @else {
             <div class="exercises">
                 @for (exercise of data.training.exercises; track exercise) {
@@ -83,8 +84,9 @@
                         <vicci-button warn (click)="onDelete(exercise)"> Excluir </vicci-button>    
                     </div>
                 }
-            </div> 
+            </div>
         }
+        
 
         <div class="addExercise" (click)="toggleAdding()">
             <img src="../../../../assets/images/plus.png">

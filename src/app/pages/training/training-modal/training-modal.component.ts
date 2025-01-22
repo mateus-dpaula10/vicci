@@ -21,52 +21,53 @@ import { ExercisesService } from '../exercises.service';
   styleUrl: './training-modal.component.scss'
 })
 export class TrainingModalComponent {
-
-  private studentsService = inject(RegisterService);
-  private equipmentsService = inject(EquipmentsService);
-  private trainingService = inject(TrainingService);
+  private studentsService = inject(RegisterService)
+  private equipmentsService = inject(EquipmentsService)
+  private trainingService = inject(TrainingService)
   private exerciseService = inject(ExercisesService)
+  private fb = inject(FormBuilder)
+  private snackbar = inject(MatSnackBar)
 
-
-  private fb = inject(FormBuilder);
-  private snackbar = inject(MatSnackBar);
-
-  student: any;
-  equipments: any;
-  exercises: any;
-  trainings: any;
-
+  student: any
+  equipments: any
+  exercises: any
+  trainings: any
   isAdding: boolean = false
   trainingExercises: any[] = []
   exercisesArray: any[] = []
-
 
   constructor(
     public dialogRef: MatDialogRef<TrainingModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
-
   ngOnInit() {
     this.studentsService.students.subscribe((res) => this.student = res)
     this.equipmentsService.equipments.subscribe((res) => this.equipments = res)
     this.exerciseService.exercises.subscribe((res) => this.exercises = res)
     this.trainingService.trainings.subscribe((res) => this.trainings = res)
-  }
+  }  
 
   formNameTraining: FormGroup = this.fb.group({
-    name: [[], Validators.required]
+    name: [this.data.training?.name || '', Validators.required]
   })
 
   formTraining: FormGroup = this.fb.group({
-    equipment: [],
-    reps: [],
-    sets: []
+    equipment: ['', Validators.required],
+    reps: [null, [Validators.required, Validators.min(1)]],
+    sets: [null, [Validators.required, Validators.min(1)]],
+    duration: [null, Validators.required],
   })
 
   saveExercise() {
     const payload = this.formTraining.value
-    this.exercisesArray.push(payload)
+
+    if (this.data.training) {
+      this.data.training.exercises = [...this.data.training.exercises, payload]
+    } else {
+      this.exercisesArray.push(payload)
+    }
+
     this.toggleAdding()
   }
 
@@ -80,17 +81,36 @@ export class TrainingModalComponent {
       this.snackbar.open("Preencha todos os campos corretamente")
       return;
     }
-    this.trainingExercises.push(this.exercisesArray)
-    const name = this.formNameTraining.value.name
-    const allInfo = { name: name, exercises: this.trainingExercises[0], studentId: this.data.student }
 
-    this.trainingService.create(allInfo)
-      .then(result => this.dialogRef.close(result))
-      .catch(() => this.exercisesArray = [])
+    const exercises = this.data.training ? this.data.training.exercises : this.exercisesArray
+    const name = this.formNameTraining.value.name
+    const studentId = this.data?.student.student || this.data.student
+    const allInfo = {
+      name: name, 
+      exercises: exercises, 
+      studentId: studentId
+    } 
+
+    if (this.data.training) {
+      this.trainingService.update(this.data.training.id, allInfo)
+        .then(result => this.dialogRef.close(result))
+        .catch(() => {
+          this.exercisesArray = []
+        })
+    } else {
+      this.trainingService.create(allInfo)
+        .then(result => this.dialogRef.close(result))
+        .catch(() => {
+          this.exercisesArray = []
+        })
+    }
   }
 
   onDelete(id: any) {
-    const index = this.exercisesArray.indexOf(id)
-    if (index > -1) this.exercisesArray.splice(index, 1);
+    if (this.data.training) {
+      this.data.training.exercises = this.data.training.exercises.filter((exercise: any) => exercise !== id)
+    } else {
+      this.exercisesArray = this.exercisesArray.filter((exercise: any) => exercise !== id)
+    }
   }
 }

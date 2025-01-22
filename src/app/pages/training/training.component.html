@@ -33,7 +33,7 @@
         </div>
 
         @for (trainings of studentTraining; track trainings) {
-        <div class="items trainingInfo" (click)="onDelete(trainings.id)">
+        <div class="items trainingInfo">
           <h3>{{trainings.name}}</h3>
           <hr />
           @for(training of trainings.exercises; track training) {
@@ -46,7 +46,11 @@
           <div class="line">
             <p>Séries: </p> <span class="textTraining">{{training.sets}}</span>
           </div>
-          <br>
+          <div class="line">
+            <p>Duração: </p> <span class="textTraining">{{training.duration}}</span>
+          </div>
+          <button (click)="onDelete(trainings.id)">Deletar</button>
+          <button (click)="onSubmit(trainings)">Editar</button>
           }
         </div>
         }

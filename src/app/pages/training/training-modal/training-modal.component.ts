@@ -53,10 +53,10 @@ export class TrainingModalComponent {
   })
 
   formTraining: FormGroup = this.fb.group({
-    equipment: ['', Validators.required],
-    reps: [null, [Validators.required, Validators.min(1)]],
-    sets: [null, [Validators.required, Validators.min(1)]],
-    duration: [null, Validators.required],
+    equipment: [this.data.training?.exercises.equipment || '', Validators.required],
+    reps: [this.data.training?.exercises.equipment || null, [Validators.required, Validators.min(1)]],
+    sets: [this.data.training?.exercises.sets || null, [Validators.required, Validators.min(1)]],
+    duration: [this.data.training?.exercises.duration || null, Validators.required],
   })
 
   saveExercise() {

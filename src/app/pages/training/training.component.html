@@ -33,26 +33,29 @@
         </div>
 
         @for (trainings of studentTraining; track trainings) {
-        <div class="items trainingInfo">
-          <h3>{{trainings.name}}</h3>
-          <hr />
-          @for(training of trainings.exercises; track training) {
-          <div class="line">
-            <p>Equipamento: </p> <span class="textTraining">{{training.equipment}}</span>
+          <div class="items trainingInfo">
+            <h3>{{trainings.name}}</h3>
+            <hr />
+            @for(training of trainings.exercises; track training) {
+              <div class="line">
+                <p>Equipamento: </p> <span class="textTraining">{{training.equipment}}</span>
+              </div>
+              <div class="line">
+                <p>Repetições: </p> <span class="textTraining">{{training.reps}}</span>
+              </div>
+              <div class="line">
+                <p>Séries: </p> <span class="textTraining">{{training.sets}}</span>
+              </div>
+              <div class="line">
+                <p>Duração: </p> <span class="textTraining">{{training.duration}}</span>
+              </div>
+              @if (trainings.exercises.length > 1) {
+                <hr />
+              }
+            }
+            <button (click)="onDelete(trainings.id)">Deletar</button>
+            <button (click)="onSubmit(trainings)">Editar</button>
           </div>
-          <div class="line">
-            <p>Repetições: </p> <span class="textTraining">{{training.reps}}</span>
-          </div>
-          <div class="line">
-            <p>Séries: </p> <span class="textTraining">{{training.sets}}</span>
-          </div>
-          <div class="line">
-            <p>Duração: </p> <span class="textTraining">{{training.duration}}</span>
-          </div>
-          <button (click)="onDelete(trainings.id)">Deletar</button>
-          <button (click)="onSubmit(trainings)">Editar</button>
-          }
-        </div>
         }
       </div>
     </div>

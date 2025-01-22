@@ -39,20 +39,20 @@
                         <mat-form-field>
                             <mat-label>Equipamento</mat-label>
                             <input matInput type="text" id="equipmentRead" placeholder="Equipamento"
-                                value="{{exercise.equipment}}">
+                                value="{{exercise.equipment}}" [readonly]="true">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Repetições</mat-label>
                             <input matInput type="number" id="repsRead" placeholder="Repetições" value="{{exercise.reps}}"
-                            >
+                             [readonly]="true">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Séries</mat-label>
-                            <input matInput type="number" id="setsRead" placeholder="Séries" value="{{exercise.sets}}">
+                            <input matInput type="number" id="setsRead" placeholder="Séries" value="{{exercise.sets}}" [readonly]="true">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Duração</mat-label>
-                            <input matInput type="time" id="durationRead" placeholder="Duração" value="{{exercise.duration}}">
+                            <input matInput type="time" id="durationRead" placeholder="Duração" value="{{exercise.duration}}" [readonly]="true">
                         </mat-form-field>
                         <vicci-button warn (click)="onDelete(exercise)"> Excluir </vicci-button>    
                     </div>
@@ -65,20 +65,19 @@
                         <mat-form-field>
                             <mat-label>Equipamento</mat-label>
                             <input matInput type="text" id="equipmentRead" placeholder="Equipamento"
-                                value="{{exercise.equipment}}">
+                                value="{{exercise.equipment}}" [readonly]="true">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Repetições</mat-label>
-                            <input matInput type="number" id="repsRead" placeholder="Repetições" value="{{exercise.reps}}"
-                            >
+                            <input matInput type="number" id="repsRead" placeholder="Repetições" value="{{exercise.reps}}" [readonly]="true">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Séries</mat-label>
-                            <input matInput type="number" id="setsRead" placeholder="Séries" value="{{exercise.sets}}">
+                            <input matInput type="number" id="setsRead" placeholder="Séries" value="{{exercise.sets}}" [readonly]="true">
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Duração</mat-label>
-                            <input matInput type="time" id="durationRead" placeholder="Duração" value="{{exercise.duration}}">
+                            <input matInput type="time" id="durationRead" placeholder="Duração" value="{{exercise.duration}}" [readonly]="true">
                         </mat-form-field>
                         <vicci-button warn (click)="onDelete(exercise)"> Excluir </vicci-button>    
                     </div>

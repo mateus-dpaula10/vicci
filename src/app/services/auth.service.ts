@@ -22,6 +22,10 @@ export class AuthService {
   usersAll = collection(this.firestore, 'users')
 
   get fetchUsers() {
+    return collectionData(this.usersAll, { idField: 'id' }) as Observable<any[]>;
+  }
+
+  get fetchStudentsCalendar() {
     return collectionData(this.usersAll, { idField: 'id' }).pipe(take(1)) as Observable<any[]>;
   }
 

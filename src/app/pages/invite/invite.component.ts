@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { NgxMaterialTimepickerModule  } from 'ngx-material-timepicker';
 import { ButtonComponent } from '../../components/utils/button/button.component';
 import { InviteService } from '../../services/invite.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -44,7 +43,6 @@ import { MatButtonModule } from '@angular/material/button';
     MatOptionModule,
     NgxMaskDirective,
     HttpClientModule,
-    NgxMaterialTimepickerModule,
     MatButtonModule
   ],
   templateUrl: './invite.component.html',

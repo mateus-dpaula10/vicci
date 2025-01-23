@@ -28,18 +28,29 @@ export class TrainingComponent {
   private allStudents = inject(AuthService);
   private trainingService = inject(TrainingService)
 
-  students: Observable<any[]> = this.allStudents.fetchUsers
-  studentsFiltered: Observable<any[]> = this.students.pipe(
+  students$: Observable<any[]> = this.allStudents.fetchUsers.pipe(
     map(items => items.filter(item => item.role === 'Aluno'))
   )
   studentInfo: any;
 
-  training: any
+  training: any;
   studentTraining: any;
+
+  user: any | null = null
+
+  async loadUser(): Promise<void> {
+    try {
+      this.user = await this.allStudents.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.user = null
+    }
+  }
 
   ngOnInit() {
     // this.studentsService.students.subscribe((res) => this.students = res)
     this.trainingService.trainings.subscribe((res) => this.training = res)
+    this.loadUser()
   }
 
   formSelectStudent: FormGroup = this.fb.group({
@@ -52,7 +63,7 @@ export class TrainingComponent {
       this.snackbar.open("Selecione um aluno")
       return;
     }
-    this.studentInfo = this.studentsFiltered.pipe(
+    this.studentInfo = this.students$.pipe(
       map(items => items.filter((info: any) => info.id === payload.student))
     ).subscribe(studentFiltered => {
       this.studentInfo = studentFiltered

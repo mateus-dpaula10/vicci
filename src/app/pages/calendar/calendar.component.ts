@@ -87,7 +87,7 @@ export class CalendarComponent {
       
       const combinedData = await firstValueFrom(
         forkJoin({
-          users: this.usersService.fetchUsers,
+          users: this.usersService.fetchStudentsCalendar,
           schedules: this.schedulesService.schedules
         })
       )

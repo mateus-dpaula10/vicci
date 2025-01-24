@@ -1,8 +1,14 @@
 <h1>Alunos</h1>
 
 <div class="table-container">
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrar</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Busque por alunos">
+    </mat-form-field>
+  </div>
 
-  <table mat-table [dataSource]="studentsFiltered$" multiTemplateDataRows class="mat-elevation-z8">
+  <table mat-table [dataSource]="filteredDataSource" multiTemplateDataRows class="mat-elevation-z8">
   
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef> Nome </th>
@@ -16,17 +22,17 @@
   
     <ng-container matColumnDef="phoneNumber">
       <th mat-header-cell *matHeaderCellDef> Celular </th>
-      <td mat-cell *matCellDef="let element"> {{element.phoneNumber}} </td>
+      <td mat-cell *matCellDef="let element"> {{currentUser.email !== element.email && currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' ? '' : element.phoneNumber}} </td>
     </ng-container>
   
     <ng-container matColumnDef="cpf">
       <th mat-header-cell *matHeaderCellDef> CPF </th>
-      <td mat-cell *matCellDef="let element"> {{element.cpf}} </td>
+      <td mat-cell *matCellDef="let element"> {{currentUser.email !== element.email && currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' ? '' : element.cpf}} </td>
     </ng-container>
   
     <ng-container matColumnDef="birthDate">
       <th mat-header-cell *matHeaderCellDef> Nascimento </th>
-      <td mat-cell *matCellDef="let element"> {{element.birthDate}} </td>
+      <td mat-cell *matCellDef="let element"> {{currentUser.email !== element.email && currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' ? '' : toDate(element.birthDate)}} </td>
     </ng-container>
   
     <ng-container matColumnDef="role">
@@ -61,42 +67,49 @@
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Nome</mat-label>
                 <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
-                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Email</mat-label>
                 <input type="email" matInput placeholder="Email" #email="ngModel" [ngModel]="element.email" name="email"
-                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Senha</mat-label>
                 <input type="password" matInput placeholder="Senha" #password="ngModel" [ngModel]="element.password" name="password"
-                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Celular</mat-label>
                 <input type="phoneNumber" matInput placeholder="Celular" #phoneNumber="ngModel" mask="(00)00000-0000"
-                  [ngModel]="element.phoneNumber" name="phoneNumber" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                  [ngModel]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email ? '' : element.phoneNumber" name="phoneNumber" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>CPF</mat-label>
-                <input matInput placeholder="CPF" #cpf="ngModel" [ngModel]="currentUser.role === 'Administrador' || currentUser.email === element.email ? element.cpf : ''" mask="000.000.000-00" name="cpf"
-                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                <input matInput placeholder="CPF" #cpf="ngModel" [ngModel]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email ? '' : element.cpf" mask="000.000.000-00" name="cpf"
+                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Data de nascimento</mat-label>
-                <input type="text" matInput placeholder="Data de nascimento" #birthDate="ngModel" mask="00/00/0000"
-                  [ngModel]="element.birthDate" name="birthDate" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                <input type="text" matInput placeholder="Data de nascimento" #birthDate="ngModel" mask="00/00/0000" (blur)="verifyOlderAge($event)"
+                  [ngModel]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email ? '' : element.birthDate" name="birthDate" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
+              </mat-form-field>
+
+              <mat-form-field [ngStyle]="{display: ((element.responsible !== '') || (!olderAge)) ? 'block' : 'none'}">
+                <mat-label>Responsável legal</mat-label>
+                <input matInput placeholder="Responsável legal" #responsible="ngModel" [ngModel]="!olderAge || element.responsible !== '' ? element.responsible : ''"
+                  [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email" 
+                  name="responsible" autocomplete="off">
               </mat-form-field>
   
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Função</mat-label>
-                <mat-select #role="ngModel" [ngModel]="element.role" name="role" [disabled]="currentUser.role !== 'Administrador'">
+                <mat-select #role="ngModel" [ngModel]="element.role" name="role" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente'">
                   <mat-option *ngFor="let role of roles" [value]="role">
                     {{ role }}
                   </mat-option>
@@ -105,7 +118,7 @@
 
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho camiseta</mat-label>
-                <mat-select #shirtSize="ngModel" [ngModel]="element.shirtSize" name="shirtSize" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                <mat-select #shirtSize="ngModel" [ngModel]="element.shirtSize" name="shirtSize" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
                   <mat-option *ngFor="let size of sizes" [value]="size">
                     {{ size }}
                   </mat-option>
@@ -115,25 +128,25 @@
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho calça</mat-label>
                 <input type="text" matInput placeholder="Tamanho calça" #pantsSize="ngModel" mask="00"
-                  [ngModel]="element.pantsSize" name="pantsSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                  [ngModel]="element.pantsSize" name="pantsSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
 
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho bermuda</mat-label>
                 <input type="text" matInput placeholder="Tamanho bermuda" #shortsSize="ngModel" mask="00"
-                  [ngModel]="element.shortsSize" name="shortsSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                  [ngModel]="element.shortsSize" name="shortsSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
 
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Tamanho calçado fitness</mat-label>
                 <input type="text" matInput placeholder="Tamanho calçado fitness" #shoeSize="ngModel" mask="00"
-                  [ngModel]="element.shoeSize" name="shoeSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                  [ngModel]="element.shoeSize" name="shoeSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
 
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Aluno convidado</mat-label>
                 <input type="text" matInput placeholder="Aluno convidado" #studentConvidated="ngModel" [ngModel]="element.studentConvidated ? element.studentConvidated : 'Não'" name="studentConvidated"
-                  autocomplete="off" [disabled]="currentUser.role !== 'Administrador'">
+                  autocomplete="off" [disabled]="true">
               </mat-form-field>
   
               <div class="file">
@@ -149,7 +162,7 @@
                 }
               </div>
   
-              @if (currentUser.role === 'Administrador' || currentUser.email === element.email) {
+              @if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente' || currentUser.email === element.email) {
                 <div class="file">
                   <label for="photoEditRegister">
                     <div>
@@ -168,12 +181,12 @@
                 </div>
               }
             </div>
-            @if (currentUser.role === 'Administrador') {
+            @if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente') {
               <vicci-button warn (click)="onDelete(element.id, element.photo, element.pdf)">Excluir</vicci-button>
             }
-            @if (currentUser.role === 'Administrador' || currentUser.email === element.email) {
+            @if (currentUser.role === 'Administrador' || currentUser.role !== 'Gerente' || currentUser.email === element.email) {
               <vicci-button accent
-                (click)="onSubmit(element.id, name, email, password, phoneNumber, cpf, birthDate, element.pdf, element.photo, role, shirtSize, pantsSize, shortsSize, shoeSize)">Salvar</vicci-button>
+                (click)="onSubmit(element.id, name, email, password, phoneNumber, cpf, birthDate, responsible, element.pdf, element.photo, role, shirtSize, pantsSize, shortsSize, shoeSize)">Salvar</vicci-button>
             }
           </form>
         </div>

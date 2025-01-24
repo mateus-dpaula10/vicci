@@ -13,7 +13,7 @@ import { RegisterModalComponent } from './register-modal/register-modal.componen
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
@@ -26,7 +26,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
     ]),
   ],
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, ButtonComponent, MatIconModule, MatInputModule, FormsModule, AsyncPipe, NgxMaskDirective, CommonModule, MatSelect, MatOption],
+  imports: [MatButtonModule, MatTableModule, ButtonComponent, MatIconModule, MatInputModule, FormsModule, NgxMaskDirective, CommonModule, MatSelect, MatOption],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
   providers: [provideNgxMask({ /* opções de cfg */ })]
@@ -37,23 +37,30 @@ export class RegisterComponent {
   private allStudents = inject(AuthService);
   private snackbar = inject(MatSnackBar);
 
+  constructor() {
+    this.students$.subscribe(students => {
+      this.filteredDataSource.data = students
+    })
+  }
+
   imagePreview: any;
   file: any;
   pdf: any;
 
   displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'role', 'studentConvidated'];
-  dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
 
-  // students$ = this.studentService.students;
-  students$: Observable<any[]> = this.allStudents.fetchUsers
-  studentsFiltered$: Observable<any[]> = this.students$.pipe(
+  students$: Observable<any[]> = this.allStudents.fetchUsers.pipe(
     map(items => items.filter(item => item.role === 'Aluno'))
   )  
+
+  filteredDataSource = new MatTableDataSource<any>();
+
   roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
   sizes: string[] = ['P', 'M', 'G', 'GG', 'XG']
   currentUser: any | null = null
+  olderAge: boolean = true
 
   async ngOnInit() {
     this.loadUser()
@@ -72,6 +79,57 @@ export class RegisterComponent {
     const dialogRef = this.dialog.open(RegisterModalComponent)
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase()
+
+    this.students$.pipe(
+      map(students => students.filter(student => student.name.toLowerCase().includes(filterValue)))
+    ).subscribe(filteredStudents => {
+      this.filteredDataSource.data = filteredStudents
+    })
+  }
+
+  toDate(date: string) {
+    const day = date.slice(0, 2)
+    const month = date.slice(2, 4)
+    const year = date.slice(4)
+    const formatedDate = `${day}/${month}/${year}`
+    return formatedDate
+  }
+
+  verifyOlderAge(event: Event): void {
+    const inputDate = (event.target as HTMLInputElement).value
+
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(inputDate)) {
+      console.error('Data de nascimento inválida!')
+      this.olderAge = false
+      return
+    }
+
+    const [day, month, year] = inputDate.split('/').map(Number)
+
+    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900) {
+      console.error('Data de nascimento inválida!')
+      this.olderAge = false
+      return
+    }
+
+    const currentDate = new Date()
+    const birthDate = new Date(year, month - 1, day) 
+
+    let age = currentDate.getFullYear() - birthDate.getFullYear()
+
+    if (
+      currentDate.getMonth() < birthDate.getMonth() ||
+      (currentDate.getMonth() === birthDate.getMonth() &&
+      currentDate.getDate() < birthDate.getDate())
+    ) {
+      age--
+    }
+    
+    this.olderAge = age >= 18
+  }
+
   onSubmit(
     id: any, 
     name: any, 
@@ -80,6 +138,7 @@ export class RegisterComponent {
     phoneNumber: any, 
     cpf: any, 
     birthDate: any, 
+    responsible: any, 
     pdf?: any, 
     photo?: any, 
     role?: any, 
@@ -94,6 +153,7 @@ export class RegisterComponent {
       phoneNumber: phoneNumber.value,
       cpf: cpf.value,
       birthDate: birthDate.value,
+      responsible: responsible.value,
       pdf: pdf,
       photo: photo,
       role: role.value,

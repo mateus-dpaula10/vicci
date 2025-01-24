@@ -2,7 +2,7 @@
 
 <vicci-button (click)="openDialog()" accent> Registrar feedback </vicci-button>
 
-@if (currentUser.role === 'Administrador') {
+@if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente') {
     <table mat-table [dataSource]="feedbacks$" multiTemplateDataRows class="mat-elevation-z8">
         <ng-container matColumnDef="student">
             <th mat-header-cell *matHeaderCellDef> Nome </th>

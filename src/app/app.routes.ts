@@ -22,7 +22,7 @@ export const routes: Routes = [
     {
         path: 'invite',
         canActivate: [authGuard],
-        data: { roles: ['Gerente', 'Administrador', 'Instrutor', 'Aluno', 'Recepcionista'] },
+        data: { roles: ['Gerente', 'Administrador', 'Aluno'] },
         loadComponent: () => import('./pages/invite/invite.component').then(mod => mod.InviteComponent)
     },
     {
@@ -52,7 +52,7 @@ export const routes: Routes = [
     {
         path: 'plans',
         canActivate: [authGuard],
-        data: { roles: ['Gerente', 'Administrador', 'Instrutor', 'Aluno', 'Recepcionista'] },
+        data: { roles: ['Gerente', 'Administrador', 'Recepcionista'] },
         loadComponent: () => import('./pages/plans/plans.component').then(mod => mod.PlansComponent)
     },
     {
@@ -76,7 +76,7 @@ export const routes: Routes = [
     {
         path: 'employees',
         canActivate: [authGuard],
-        data: { roles: ['Gerente', 'Administrador', 'Instrutor', 'Aluno', 'Recepcionista'] },
+        data: { roles: ['Gerente', 'Administrador'] },
         loadComponent: () => import('./pages/employees/employees.component').then(mod => mod.EmployeesComponent)
     },
     {

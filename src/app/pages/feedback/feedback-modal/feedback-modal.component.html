@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
     <form [formGroup]="feedbackForm">
-        @if (currentUser.role === 'Administrador') {
+        @if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente') {
             <mat-form-field appearance="fill">
                 <mat-label>Selecione um aluno</mat-label>
                 <mat-select id="student" formControlName="student">

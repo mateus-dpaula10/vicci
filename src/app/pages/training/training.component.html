@@ -4,7 +4,7 @@
     <form [formGroup]="formSelectStudent">
       <mat-form-field appearance="outline">
         <mat-select matNativeControl formControlName="student" name="student" placeholder="Selecione">
-          <mat-option [value]="student.id" *ngFor="let student of students$ | async" [disabled]="student.email !== user.email">
+          <mat-option [value]="student.id" *ngFor="let student of students$ | async" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente' && student.name !== user.name">
             {{ student.name }}
           </mat-option>
         </mat-select>

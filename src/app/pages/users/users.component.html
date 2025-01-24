@@ -1,4 +1,4 @@
-@if (pendingUsers.length > 0 && currentUser.role === 'Administrador') {
+@if (pendingUsers.length > 0 && currentUser.role === 'Administrador' || currentUser.role === 'Gerente') {
     <mat-list>
         <h3>Usuários pendentes</h3>
       
@@ -70,21 +70,21 @@
                 <mat-form-field subscriptSizing="dynamic">
                     <mat-label>Nome</mat-label>
                     <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
-                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
                 </mat-form-field>
                 <mat-form-field subscriptSizing="dynamic">
                     <mat-label>E-mail</mat-label>
                     <input matInput placeholder="E-mail" #email="ngModel" [ngModel]="element.email" name="email"
-                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
                 </mat-form-field>
                 <mat-form-field subscriptSizing="dynamic">
                     <mat-label>Senha</mat-label>
                     <input matInput placeholder="Senha" #password="ngModel" [ngModel]="element.password" name="password"
-                        autocomplete="off" type="password" [disabled]="currentUser.role !== 'Administrador' && currentUser.email !== element.email">
+                        autocomplete="off" type="password" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
                 </mat-form-field>
                 <mat-form-field subscriptSizing="dynamic">
                     <mat-label>Função</mat-label>
-                    <mat-select #role="ngModel" [ngModel]="element.role" name="role" [disabled]="currentUser.role !== 'Administrador'">
+                    <mat-select #role="ngModel" [ngModel]="element.role" name="role" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente'">
                         <mat-option *ngFor="let role of roles" [value]="role">
                         {{ role }}
                         </mat-option>
@@ -92,7 +92,7 @@
                 </mat-form-field>
                 <mat-form-field subscriptSizing="dynamic">
                     <mat-label>Status</mat-label>
-                    <mat-select #status="ngModel" [ngModel]="element.status" name="status" [disabled]="currentUser.role !== 'Administrador'">
+                    <mat-select #status="ngModel" [ngModel]="element.status" name="status" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente'">
                         <mat-option *ngFor="let item of status_" [value]="item">
                         {{ item }}
                         </mat-option>
@@ -101,13 +101,13 @@
                 <mat-form-field subscriptSizing="dynamic">
                     <mat-label>Aluno convidado</mat-label>
                     <input matInput placeholder="Aluno convidado" #studentConvidated="ngModel" [ngModel]="element.studentConvidated ? element.studentConvidated : 'Não'" name="studentConvidated"
-                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador'" [readonly]="true">
+                        autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente'" [readonly]="true">
                 </mat-form-field>
             </div>
-            @if (currentUser.role === 'Administrador') {
+            @if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente') {
                 <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
             }
-            @if (currentUser.role === 'Administrador' || currentUser.email === element.email) {
+            @if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente' || currentUser.email === element.email) {
                 <vicci-button accent (click)="onSubmit(element.id, name, email, password, role, status)">Salvar</vicci-button>
             }
             </form>

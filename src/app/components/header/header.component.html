@@ -1,0 +1,9 @@
+<header>
+    <div>
+        <img src="{{ user.photo ? user.photo : 'assets/images/user.png' }}" alt="Foto de perfil do usuário '{{ user.name }}'">
+    </div>
+    <div>
+        <p>{{ user.name }}</p>
+        <mat-icon title="Sair" aria-hidden="false" aria-label="logout" fontIcon="logout" (click)="onLogout()" class="logout"></mat-icon>
+    </div>
+</header>

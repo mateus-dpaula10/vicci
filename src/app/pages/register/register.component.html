@@ -34,11 +34,6 @@
       <th mat-header-cell *matHeaderCellDef> Nascimento </th>
       <td mat-cell *matCellDef="let element"> {{currentUser.email !== element.email && currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' ? '' : toDate(element.birthDate)}} </td>
     </ng-container>
-  
-    <ng-container matColumnDef="role">
-      <th mat-header-cell *matHeaderCellDef> Função </th>
-      <td mat-cell *matCellDef="let element"> {{element.role}} </td>
-    </ng-container>
 
     <ng-container matColumnDef="studentConvidated">
       <th mat-header-cell *matHeaderCellDef> Aluno convidado </th>
@@ -100,19 +95,27 @@
                   [ngModel]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email ? '' : element.birthDate" name="birthDate" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
 
-              <mat-form-field [ngStyle]="{display: ((element.responsible !== '') || (!olderAge)) ? 'block' : 'none'}">
+              <mat-form-field [ngStyle]="{display: !olderAge || element.responsible ? 'block' : 'none'}">
                 <mat-label>Responsável legal</mat-label>
-                <input matInput placeholder="Responsável legal" #responsible="ngModel" [ngModel]="!olderAge || element.responsible !== '' ? element.responsible : ''"
+                <input matInput placeholder="Responsável legal" #responsible="ngModel" [ngModel]="element.responsible"
                   [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email" 
                   name="responsible" autocomplete="off">
               </mat-form-field>
-  
-              <mat-form-field subscriptSizing="dynamic">
-                <mat-label>Função</mat-label>
-                <mat-select #role="ngModel" [ngModel]="element.role" name="role" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente'">
-                  <mat-option *ngFor="let role of roles" [value]="role">
-                    {{ role }}
-                  </mat-option>
+
+              <mat-form-field [ngStyle]="{display: !olderAge || element.cellphone_responsible ? 'block' : 'none'}">
+                <mat-label>Celular do responsável legal</mat-label>
+                <input matInput placeholder="Celular do responsável legal" #cellphone_responsible="ngModel" [ngModel]="element.cellphone_responsible"
+                  [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email" 
+                  name="cellphone_responsible" autocomplete="off" mask="(00)00000-0000">
+              </mat-form-field>
+
+              <mat-form-field [ngStyle]="{display: !olderAge || element.consent_responsible ? 'block' : 'none'}">
+                <mat-label>Consentimento do responsável legal</mat-label>
+                <mat-select #consent_responsible="ngModel" [ngModel]="element.consent_responsible" name="consent_responsible"
+                  [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email" 
+                >
+                  <mat-option value="Sim">Sim</mat-option>
+                  <mat-option value="Não">Não</mat-option>
                 </mat-select>
               </mat-form-field>
 
@@ -141,6 +144,12 @@
                 <mat-label>Tamanho calçado fitness</mat-label>
                 <input type="text" matInput placeholder="Tamanho calçado fitness" #shoeSize="ngModel" mask="00"
                   [ngModel]="element.shoeSize" name="shoeSize" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
+              </mat-form-field>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Objetivo</mat-label>
+                <input type="text" matInput placeholder="Objetivo" #objective="ngModel"
+                  [ngModel]="element.objective" name="objective" autocomplete="off" [disabled]="currentUser.role !== 'Administrador' && currentUser.role !== 'Gerente' && currentUser.email !== element.email">
               </mat-form-field>
 
               <mat-form-field subscriptSizing="dynamic">
@@ -180,13 +189,17 @@
                   </label>
                 </div>
               }
+
+              <div class="addPersonalInformations">
+                <p (click)="addPersonalData(element.id)">Inserir dados pessoais</p>
+              </div>
             </div>
             @if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente') {
               <vicci-button warn (click)="onDelete(element.id, element.photo, element.pdf)">Excluir</vicci-button>
             }
-            @if (currentUser.role === 'Administrador' || currentUser.role !== 'Gerente' || currentUser.email === element.email) {
+            @if (currentUser.role === 'Administrador' || currentUser.role === 'Gerente' || currentUser.email === element.email) {
               <vicci-button accent
-                (click)="onSubmit(element.id, name, email, password, phoneNumber, cpf, birthDate, responsible, element.pdf, element.photo, role, shirtSize, pantsSize, shortsSize, shoeSize)">Salvar</vicci-button>
+                (click)="onSubmit(element.id, name, email, password, phoneNumber, cpf, birthDate, responsible, cellphone_responsible, consent_responsible, element.pdf, element.photo, shirtSize, pantsSize, shortsSize, shoeSize, objective)">Salvar</vicci-button>
             }
           </form>
         </div>

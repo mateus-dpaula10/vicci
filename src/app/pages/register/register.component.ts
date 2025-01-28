@@ -13,7 +13,7 @@ import { RegisterModalComponent } from './register-modal/register-modal.componen
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
-import { filter, map, Observable } from 'rxjs';
+import { filter, map, Observable, take } from 'rxjs';
 import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
@@ -47,7 +47,7 @@ export class RegisterComponent {
   file: any;
   pdf: any;
 
-  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'role', 'studentConvidated'];
+  displayedColumns: string[] = ['name', 'email', 'phoneNumber', 'cpf', 'birthDate', 'studentConvidated'];
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
 
@@ -73,10 +73,6 @@ export class RegisterComponent {
       console.error('Erro ao carregar usuário logado: ', error)
       this.currentUser = null
     }
-  }
-
-  openDialog() {
-    const dialogRef = this.dialog.open(RegisterModalComponent)
   }
 
   applyFilter(event: Event) {
@@ -139,14 +135,17 @@ export class RegisterComponent {
     cpf: any, 
     birthDate: any, 
     responsible: any, 
+    cellphone_responsible: any, 
+    consent_responsible: any, 
     pdf?: any, 
-    photo?: any, 
-    role?: any, 
+    photo?: any,
     shirtSize?: any, 
     pantsSize?: any,
     shortsSize?: any,
-    shoeSize?: any) {
-    this.studentService.update(id, {
+    shoeSize?: any,
+    objective?: any
+  ) {
+    const payload = {
       name: name.value,
       email: email.value,
       password: password.value,
@@ -154,14 +153,18 @@ export class RegisterComponent {
       cpf: cpf.value,
       birthDate: birthDate.value,
       responsible: responsible.value,
+      cellphone_responsible: cellphone_responsible.value,
+      consent_responsible: consent_responsible.value,
       pdf: pdf,
       photo: photo,
-      role: role.value,
       shirtSize: shirtSize.value,
       pantsSize: pantsSize.value,
       shortsSize: shortsSize.value,
-      shoeSize: shoeSize.value
-    }, this.file, this.pdf)
+      shoeSize: shoeSize.value,
+      objective: objective.value
+    }
+
+    this.studentService.update(id, payload, this.file, this.pdf)
       .then(() => {
         this.snackbar.open("Aluno atualizado com sucesso!", 'Fechar', { duration: 3000 })
       })
@@ -199,6 +202,7 @@ export class RegisterComponent {
 
     reader.readAsDataURL(file);
   }
+
   cleanImagePreview() {
     this.imagePreview = null;
   }
@@ -212,4 +216,18 @@ export class RegisterComponent {
   //   const phoneFormatted = `(${phoneNumber.slice(0, 2)})${phoneNumber.slice(2, 7)}-${phoneNumber.slice(7, 11)}`
   //   return phoneFormatted
   // }
+
+  addPersonalData(id: number) {
+    this.students$.pipe(
+      map((students) => students.filter((student) => student.id === id)),
+      take(1)
+    )
+    .subscribe((student) => {
+      if (student) {
+        this.dialog.open(RegisterModalComponent, {
+          data: { student }
+        })
+      }
+    })
+  }
 }

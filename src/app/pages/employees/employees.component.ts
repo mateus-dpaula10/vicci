@@ -12,6 +12,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '../../components/utils/button/button.component';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { AuthService } from '../../services/auth.service';
+import { map, Observable } from 'rxjs';
+import { UnitServiceService } from '../units/unit-service.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-employees',
@@ -23,7 +28,18 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     ]),
   ],
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, ButtonComponent, MatIconModule, MatInputModule, FormsModule, AsyncPipe, NgxMaskDirective],
+  imports: [
+    MatButtonModule, 
+    MatTableModule, 
+    ButtonComponent, 
+    MatIconModule, 
+    MatInputModule, 
+    FormsModule, 
+    NgxMaskDirective,
+    MatSelectModule,
+    MatOptionModule,
+    AsyncPipe
+  ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.scss',
   providers: [provideNgxMask()]
@@ -33,13 +49,41 @@ export class EmployeesComponent {
   private dialog = inject(MatDialog);
   private employeesService = inject(EmployeesService);
   private snackbar = inject(MatSnackBar);
+  private authService = inject(AuthService);
+  private unitsService = inject(UnitServiceService);
 
-  employees$ = this.employeesService.employees;
+  students$: Observable<any[]> = this.authService.fetchUsers.pipe(
+    map(students => students.filter(student => student.role === 'Colaborador'))
+  )
+  studentsFiltered$: Observable<any[]>
 
-  displayedColumns: string[] = ['name', 'cpf', 'functionEmployee', 'hiringDate', 'unit', 'status'];
+  units$: Observable<any[]> = this.unitsService.units
+  sectors: any[] = ['Limpeza', 'Recepção']
+
+  displayedColumns: string[] = ['name', 'email', 'cpf', 'hiring_date', 'sector'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
+
+  user: any | null = null
+
+  async ngOnInit() {
+    this.loadUser()    
+  }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.user = await this.authService.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.user = null
+    }
+
+    for (let unit of this.user.units) {
+      this.studentsFiltered$ = this.students$.pipe(
+        map(students => students.filter(student => student.units.includes(unit))))
+    }
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(EmployeesModalComponent);
@@ -52,25 +96,27 @@ export class EmployeesComponent {
     })
   }
 
-  onSubmit(id: any, name: any, cpf: any, functionEmployee: any, hiringDate: any, unit: any, status: any) {
-    this.employeesService.update(id, {
+  onSubmit(id: any, name: any, email: any, cpf: any, units: any, hiring_date: any, sector: any) {
+    const payload = {
       name: name.value,
+      email: email.value,
       cpf: cpf.value,
-      functionEmployee: functionEmployee.value,
-      hiringDate: hiringDate.value,
-      unit: unit.value,
-      status: status.value
-    })
-      .then(() => this.snackbar.open("Funcionário atualizado", ))
-      .catch(() => this.snackbar.open("Erro ao atualizar", ))
+      units: units.value,
+      hiring_date: hiring_date.value,
+      sector: sector.value
+    }
+
+    this.employeesService.update(id, payload)
+      .then(() => this.snackbar.open("Colaborador atualizado com sucesso!", 'Fechar', { duration: 3000 } ))
+      .catch(() => this.snackbar.open("Erro ao atualizar Colaborador!", 'Fechar', { duration: 3000 } ))
   }
 
   onDelete(id: any) {
-    const snackbarRef = this.snackbar.open("Deseja excluir funcionário?", "Excluir", { duration: 3000 });
+    const snackbarRef = this.snackbar.open("Deseja excluir Colaborador?", "Excluir", { duration: 3000 });
     snackbarRef.onAction().subscribe(() => {
       this.employeesService.delete(id)
-        .then(() => this.snackbar.open("Funcionário excluído", ))
-        .catch(() => this.snackbar.open("Erro ao excluir", ))
+        .then(() => this.snackbar.open("Colaborador excluído com sucesso!", 'Fechar', { duration: 3000 } ))
+        .catch(() => this.snackbar.open("Erro ao excluir Colaborador!", 'Fechar', { duration: 3000 } ))
     })
   }
 

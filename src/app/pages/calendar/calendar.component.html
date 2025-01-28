@@ -39,7 +39,7 @@
                     } 
                     @else {
                         <div class="day previousMonth"> {{day.day}}</div>
-                    }
+                    }                    
                     <div class="schedules">
                         @for(class of day.classesByTeacher; track class){
                             <div class="class" [ngStyle]="{'background-color':  class.color}">

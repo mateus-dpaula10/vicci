@@ -46,6 +46,7 @@ export class CalendarComponent {
   teachersA: ITeacher[] = [];
   schedules: ISchedule[] = [];
   showCalendar: boolean = false
+  user: any | null = null
 
   openDialog(): void {
     this.dialog.open(ScheduleModalComponent, { 
@@ -69,6 +70,17 @@ export class CalendarComponent {
     this.formSelectedUnit = this.fb.group({
       unit: ['', Validators.required]
     })
+
+    this.loadUser()
+  }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.user = await this.usersService.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.user = null
+    }
   }
 
   async filterUnit() {

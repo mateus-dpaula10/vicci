@@ -9,6 +9,7 @@ export class EmployeesService {
 
   private firestore: Firestore = inject(Firestore);
   employeeCollection = collection(this.firestore, 'employees');
+  usersAll = collection(this.firestore, 'users');
 
   get employees() {
     return collectionData(this.employeeCollection, { idField: 'id' }) as Observable<any[]>;
@@ -19,12 +20,12 @@ export class EmployeesService {
   }
 
   update(id: any, payload: any) {
-    const employeeRef = doc(this.employeeCollection, id);
+    const employeeRef = doc(this.usersAll, id);
     return updateDoc(employeeRef, payload);
   }
 
   delete(id: any) {
-    const employeeRef = doc(this.employeeCollection, id)
+    const employeeRef = doc(this.usersAll, id)
     return deleteDoc(employeeRef);
   }
 

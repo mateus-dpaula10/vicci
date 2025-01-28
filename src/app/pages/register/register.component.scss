@@ -5,7 +5,7 @@
     row-gap: 2rem;  
 
     .table-container {
-        max-width: 100%;
+        width: 100%;
         overflow-x: auto;
         margin: 0 auto;
 
@@ -70,6 +70,16 @@
                         mat-form-field,
                         button {
                             width: 100%;
+                        }
+
+                        .addPersonalInformations {
+                            cursor: pointer;
+
+                            &:hover {
+                                p {
+                                    text-decoration: underline;
+                                }
+                            }
                         }
         
                         img {

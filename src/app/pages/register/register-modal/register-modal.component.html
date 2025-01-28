@@ -1,83 +1,63 @@
-<h2 mat-dialog-title>Criar aluno</h2>
+<h2 mat-dialog-title>Adicionar informações ao aluno '{{ student.name }}'</h2>
 <mat-dialog-content>
   <form [formGroup]="formStudent">
     <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Nome</mat-label>
+      <mat-label>Contato de emergência</mat-label>
       <input
         matInput
-        formControlName="name"
+        formControlName="emergency_contact"
         type="text"
-        id="name"
-        placeholder="Insira o nome"
+        placeholder="Insira o contato"
       />
     </mat-form-field>
     <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Email</mat-label>
+      <mat-label>Celular do contato</mat-label>
       <input
         matInput
-        formControlName="email"
-        type="email"
-        id="email"
-        placeholder="Insira o email"
-      />
-    </mat-form-field>
-    <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Celular</mat-label>
-      <input
-        matInput
-        formControlName="phoneNumber"
-        type="tel"
+        formControlName="phone_number_emergency_contact"
+        type="text"
+        placeholder="Insira o celular"
         mask="(00)00000-0000"
-        id="phoneNumber"
-        placeholder="Insira o número"
       />
     </mat-form-field>
     <mat-form-field subscriptSizing="dynamic">
-      <mat-label>CPF</mat-label>
+      <mat-label>Endereço residencial</mat-label>
       <input
         matInput
-        formControlName="cpf"
+        formControlName="home_address"
         type="text"
-        id="cpf"
-        mask="000.000.000-00"
-        placeholder="Insira o CPF"
+        placeholder="Insira o endereço"
       />
     </mat-form-field>
     <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Senha</mat-label>
-      <input
-        type="password"
-        matInput
-        formControlName="password"
-        id="password"
-        placeholder="Insira a senha"
-      />
-    </mat-form-field>
-    <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Data de nascimento</mat-label>
+      <mat-label>Hospital de preferência</mat-label>
       <input
         matInput
-        formControlName="birthDate"
+        formControlName="preferred_hospital"
         type="text"
-        id="birthDate"
-        placeholder="dd/mm/aaaa"
+        placeholder="Insira o hospital"
       />
     </mat-form-field>
-
-    <mat-label>Foto</mat-label>
-    <div class="file">
-      <label for="photo">
-        <span>Anexar arquivo</span>
-        <mat-icon fontIcon="file_upload"></mat-icon>
-      </label>
-      @if (imagePreview) {<img [src]="imagePreview" alt="Preview" />}
-      <input
-        type="File"
-        (change)="onImageSelected($event.target)"
-        id="photo"
-        placeholder="Insira a agenda do professor"
-      />
-    </div>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Plano de saúde</mat-label>
+      <mat-select formControlName="health_plans">
+        @for (plan of health_plans; track plan) {
+          <mat-option [value]="plan">
+            {{ plan }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Restrições/condições de saúde pré existentes</mat-label>
+      <mat-select formControlName="medical_restrictions">
+        @for (mr of medical_restrictions; track mr) {
+          <mat-option [value]="mr">
+            {{ mr }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>

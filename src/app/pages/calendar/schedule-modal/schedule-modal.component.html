@@ -5,7 +5,7 @@
             <mat-label>Aluno</mat-label>
             <mat-select formControlName="student" name="student">                
                 @for (student of students$ | async; track student) {
-                    <mat-option [value]="student.name" [disabled]="student.name !== user.name">
+                    <mat-option [value]="student.name" [disabled]="student.name !== user.name && user.role !== 'Instrutor'">
                         {{ student.name }}
                     </mat-option>                
                 }
@@ -21,7 +21,7 @@
             <mat-label>Professor(a)</mat-label>
             <mat-select formControlName="teacher" name="teacher" (selectionChange)="onTeacherChange($event.value)">
                 @for (teacher of teachers; track teacher) {
-                    <mat-option [value]="teacher.name">
+                    <mat-option [value]="teacher.name" [disabled]="user.role === 'Instrutor' && user.name !== teacher.name">
                         {{ teacher.name }}
                     </mat-option>
                 }

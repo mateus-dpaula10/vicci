@@ -11,6 +11,9 @@
         <a class="item" routerLink="/calendar">
             Calendário
         </a>
+        <a class="item" routerLink="/employees">
+            Colaboradores
+        </a>
         <a class="item" routerLink="/dashboard">
             Dashboard
         </a>
@@ -23,13 +26,10 @@
         <a class="item" routerLink="/feedback">
             Feedback
         </a>
-        <a class="item" routerLink="/employees" *ngIf="user.role === 'Administrador' || user.role === 'Gerente'">
-            Funcionários
-        </a>
         <a class="item" routerLink="/invite" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Aluno'">
             Invite
         </a>
-        <a class="item" routerLink="/plans" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Recepcionista'">
+        <a class="item" routerLink="/plans" *ngIf="user.role === 'Administrador' || user.role === 'Gerente' || user.role === 'Colaborador'">
             Planos
         </a>
         <a class="item" routerLink="/teachers">
@@ -47,6 +47,5 @@
         <a class="item" routerLink="/users">
             Usuários
         </a>
-        <mat-icon aria-hidden="false" aria-label="logout" fontIcon="logout" (click)="onLogout()" class="logout">Sair</mat-icon>
     </nav>
 </main>

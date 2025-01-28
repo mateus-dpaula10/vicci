@@ -104,6 +104,11 @@ export class RegisterService {
     }
   }
 
+  async updateInformations(id: any, payload: any) {
+    const studentRef = doc(this.usersAll, id)
+    await updateDoc(studentRef, payload)
+  }
+
   private async uploadFile(file: any, existingPath?: string): Promise<string> {
     const storage = getStorage()
     const dotIndex = file.name.lastIndexOf('.')

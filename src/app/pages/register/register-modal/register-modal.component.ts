@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,13 +6,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '../../../components/utils/button/button.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RegisterService } from '../register.service';
 import { MatIconModule } from '@angular/material/icon';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-register-modal',
@@ -25,6 +27,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     ButtonComponent,
     MatIconModule,
     NgxMaskDirective,
+    MatSelectModule,
+    MatOptionModule
   ],
   templateUrl: './register-modal.component.html',
   styleUrl: './register-modal.component.scss',
@@ -34,60 +38,46 @@ export class RegisterModalComponent {
   private fb = inject(FormBuilder);
   private studentService = inject(RegisterService);
   private snackbar = inject(MatSnackBar);
-  private file: File | undefined;
-  private pdf: File | undefined;
-  imagePreview: any;
+  formStudent: FormGroup
+  student: any
+  health_plans: any[] = ['Amil', 'Intermédica', 'Unimed', 'Porto Seguro']
+  medical_restrictions: any[] = ['Cardiopatias', 'Pré-eclâmpsia']
 
-  formStudent: FormGroup = this.fb.group({
-    name: [[], Validators.required],
-    email: [[], Validators.email],
-    phoneNumber: [[], Validators.required],
-    cpf: [[], Validators.required],
-    password: [[], Validators.required],
-    birthDate: [[], Validators.required],
-    pdf: [],
-    photo: [],
-  });
+  constructor(
+    public dialogRef: MatDialogRef<RegisterModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.student = this.data.student[0]
+    this.formStudent = this.fb.group({
+      emergency_contact: [this.student.emergency_contact || '', Validators.required],
+      phone_number_emergency_contact: [this.student.phone_number_emergency_contact || '', Validators.required],
+      home_address: [this.student.home_address || '', Validators.required],
+      preferred_hospital: [this.student.preferred_hospital || '', Validators.required],
+      health_plans: [this.student.health_plans || '', Validators.required],
+      medical_restrictions: [this.student.medical_restrictions || '', Validators.required]
+    });
+   }
 
-  constructor(public dialogRef: MatDialogRef<RegisterModalComponent>) {}
+  ngOnInit(): void {
+    
+  }
 
   onSubmit() {
-    const payload = this.formStudent.value;
+    const payload = this.formStudent.value
 
     if (this.formStudent.invalid) {
-      this.snackbar.open('Preencha todos os campos', undefined, {
-        duration: 2000,
-      });
-      return;
+      this.snackbar.open('Preencha todos os campos', 'Fechar', { duration: 3000 })
+      return
     }
+
     this.studentService
-      .create(payload, this.file as File, this.pdf as File)
+      .updateInformations(this.student.id, payload)
       .then((result) => {
-
-        this.dialogRef.close(result);
+        this.dialogRef.close(result)        
+        this.snackbar.open("Informações adicionados ao aluno com sucesso!", 'Fechar', { duration: 3000 })
       })
-      .catch(() => {
-        this.snackbar.open('Erro ao cadastrar', );
-      });
-  }
-
-  onImageSelected(target: any) {
-    this.file = target.files[0];
-    if (this.file) {
-      this.generateImagePreview(this.file);
-    }
-  }
-
-  generateImagePreview(file: File) {
-    const reader = new FileReader();
-
-    reader.onload = (e: any) => {
-      this.imagePreview = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  onPdfSelected(target: any) {
-    this.pdf = target.files[0];
+      .catch((error) => {
+        this.snackbar.open("Erro ao adicionar informações ao aluno!" + error.message, 'Fechar', { duration: 3000 })
+      })
   }
 }

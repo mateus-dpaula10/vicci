@@ -37,7 +37,7 @@ export class UsersComponent {
 
   pendingUsers: any[] = []
   approvedUsers: any[] = []  
-  roles: string[] = ['Administrador', 'Aluno', 'Recepcionista', 'Instrutor', 'Gerente']
+  roles: string[] = ['Administrador', 'Aluno', 'Colaborador', 'Instrutor', 'Gerente']
   status_: string[] = ['Pendente', 'Aprovado']
   currentUser: any | null = null
   displayedColumns: string[] = ['name', 'email', 'role', 'status', 'studentConvidated'];

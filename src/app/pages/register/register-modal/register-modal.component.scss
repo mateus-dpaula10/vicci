@@ -1,5 +1,5 @@
 form {
-  width: 15rem;
+  width: 30rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,43 +7,5 @@ form {
 
   mat-form-field {
     width: 100%;
-  }
-
-  .file,
-  .pdf {
-    &:hover {
-      span {
-        text-decoration: underline;
-      }
-    }
-
-    label {
-      display: flex;
-      cursor: pointer;
-      color: var(--accent-color);
-      justify-content: center;
-
-      mat-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-      }
-    }
-
-    input {
-      display: none;
-    }
-
-    img {
-      width: 200px;
-    }
-  }
-}
-
-.noData {
-  td {
-    height: 59.672px;
-    color: red;
   }
 }

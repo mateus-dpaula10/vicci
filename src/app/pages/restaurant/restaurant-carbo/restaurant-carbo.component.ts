@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RestaurantCarboModalComponent } from './restaurant-carbo-modal/restaurant-carbo-modal.component';
 import { RestaurantCarboService } from './restaurant-carbo.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'restaurant-carbo',
@@ -30,13 +31,28 @@ export class RestaurantCarboComponent {
   private dialog = inject(MatDialog);
   private carboService = inject(RestaurantCarboService);
   private snackbar = inject(MatSnackBar);
+  private usersService = inject(AuthService);
 
   displayedColumns: string[] = ['name', 'weight', 'kcal', 'price'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: any;
+  user: any | null = null
 
   carbo$ = this.carboService.carbo
+
+  ngOnInit(): void {
+    this.loadUser()
+  }
+
+  async loadUser(): Promise<void> {
+    try {
+      this.user = await this.usersService.getCurrentUser()
+    } catch (error) {
+      console.error('Erro ao carregar usuário logado: ', error)
+      this.user = null
+    }
+  }
 
   openDialog() {
     const dialogRef = this.dialog.open(RestaurantCarboModalComponent);

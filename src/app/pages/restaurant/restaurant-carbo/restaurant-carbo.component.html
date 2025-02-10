@@ -1,10 +1,10 @@
 <h1>Carboidratos</h1>
 
-<vicci-button accent (click)="openDialog()"> Cadastrar carboidrato </vicci-button>
+@if (user.role === 'Administrador' || user.role === 'Gerente') {
+  <vicci-button accent (click)="openDialog()"> Cadastrar carboidrato </vicci-button>
+}
 
 <table mat-table [dataSource]="carbo$" multiTemplateDataRows class="mat-elevation-z8">
-
-
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef> Nome </th>
     <td mat-cell *matCellDef="let element"> {{element.name}} </td>
@@ -47,30 +47,31 @@
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Nome</mat-label>
               <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
-                autocomplete="off">
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
             </mat-form-field>
 
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Peso</mat-label>
               <input matInput placeholder="Peso" #weight="ngModel" [ngModel]="element.weight" name="weight"
-                autocomplete="off">
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
             </mat-form-field>
 
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Calorias</mat-label>
               <input matInput placeholder="Calorias" #kcal="ngModel" [ngModel]="element.kcal" name="kcal"
-                autocomplete="off">
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
             </mat-form-field>
 
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Preço</mat-label>
               <input matInput placeholder="Preço" #price="ngModel" [ngModel]="element.price" name="price"
-                autocomplete="off">
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
             </mat-form-field>
-
           </div>
-          <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
-          <vicci-button accent (click)="onSubmit(element.id, name, weight, kcal, price)">Salvar</vicci-button>
+          @if (user.role === 'Administrador' || user.role === 'Gerente') {
+            <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+            <vicci-button accent (click)="onSubmit(element.id, name, weight, kcal, price)">Salvar</vicci-button>
+          }
         </form>
       </div>
     </td>

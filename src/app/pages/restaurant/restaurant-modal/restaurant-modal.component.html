@@ -1,17 +1,28 @@
-<h2 mat-dialog-title>Cadastrar carboidrato</h2>
+<h2 mat-dialog-title> Cadastrar produto </h2>  
+
 <mat-dialog-content>
-    <form [formGroup]="formOmelet">
+    <form [formGroup]="productsRestaurant">
         <mat-form-field subscriptSizing="dynamic">
             <mat-label>Nome</mat-label>
             <input matInput formControlName="name" type="text" id="name" placeholder="Insira o nome">
         </mat-form-field>
         <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Categoria</mat-label>
+            <mat-select formControlName="category">
+                @for (category of productsRestaurantCategories; track category) {
+                    <mat-option [value]="category">
+                        {{ category }}
+                    </mat-option>
+                }                
+            </mat-select>            
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
             <mat-label>Peso</mat-label>
-            <input matInput formControlName="weight" type="text" id="weight" placeholder="Insira o peso">
+            <input matInput formControlName="weight" type="text" id="weight" placeholder="Insira o peso" mask="9999">
         </mat-form-field>
         <mat-form-field subscriptSizing="dynamic">
             <mat-label>Calorias</mat-label>
-            <input matInput formControlName="kcal" type="text" id="kcal" placeholder="Insira as calorias">
+            <input matInput formControlName="kcal" type="text" id="kcal" placeholder="Insira as calorias" mask="9999">
         </mat-form-field>
         <mat-form-field subscriptSizing="dynamic">
             <mat-label>Preço</mat-label>

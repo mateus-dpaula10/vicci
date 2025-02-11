@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "^17.2.0",
     "@angular/router": "^17.2.0",
     "bcryptjs": "^2.4.3",
-    "ngx-mask": "^17.0.4",
+    "ngx-mask": "^17.1.8",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "uuidv4": "^6.2.13",

@@ -16,6 +16,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { map } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { RestaurantModalReserveComponent } from './restaurant-modal-reserve/restaurant-modal-reserve.component';
+import { ProductsRestaurantReserveService } from '../../services/products-restaurant-reserve.service';
+import { RestaurantReserveComponent } from "./restaurant-reserve/restaurant-reserve.component";
 
 @Component({
   selector: 'app-restaurant',
@@ -29,9 +32,10 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   standalone: true,
   imports: [
     MatTabsModule, ButtonComponent, MatIconModule, MatFormFieldModule,
-    MatInputModule, MatTableModule, FormsModule, MatSelectModule, MatButtonModule, 
-    NgxMaskDirective
-  ],
+    MatInputModule, MatTableModule, FormsModule, MatSelectModule, MatButtonModule,
+    NgxMaskDirective,
+    RestaurantReserveComponent
+],
   templateUrl: './restaurant.component.html',
   styleUrl: './restaurant.component.scss',
   providers: [provideNgxMask()]
@@ -67,7 +71,15 @@ export class RestaurantComponent {
   )
   productsRestaurantProtein$ = this.productsRestaurant$.pipe(
     map(products => products.filter(product => product.category === 'Proteína'))
-  )
+  )  
+
+  tabs: any[] = [
+    { label: 'Bebidas', content: this.productsRestaurantBeverage$ },
+    { label: 'Carboidratos', content: this.productsRestaurantCarbohydrate$ },
+    { label: 'Mix de saladas', content: this.productsRestaurantSalad$ },
+    { label: 'Omelete orgânico', content: this.productsRestaurantOmelet$ },
+    { label: 'Proteína', content: this.productsRestaurantProtein$ },
+  ]
 
   ngOnInit(): void {
     this.loadUser()
@@ -84,6 +96,17 @@ export class RestaurantComponent {
 
   openDialog() {
     const dialogRef = this.dialog.open(RestaurantModalComponent)
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (!res) return
+      this.dataSource.data.push(res)
+      this.dataSource = new MatTableDataSource(this.dataSource.data)
+      this.snackbar.open("Produto adicionado com sucesso!", 'Fechar', { duration: 3000 })
+    })
+  }
+
+  openDialogReserve() {
+    const dialogRef = this.dialog.open(RestaurantModalReserveComponent)
 
     dialogRef.afterClosed().subscribe(res => {
       if (!res) return

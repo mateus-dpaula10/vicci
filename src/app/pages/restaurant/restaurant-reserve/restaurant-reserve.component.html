@@ -1,0 +1,77 @@
+<h1>Reservas de refeições</h1>
+
+<table mat-table [dataSource]="productsRestaurantReserve$" multiTemplateDataRows class="mat-elevation-z8">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Nome </th>
+    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="date">
+    <th mat-header-cell *matHeaderCellDef> Data </th>
+    <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="time">
+    <th mat-header-cell *matHeaderCellDef> Horário </th>
+    <td mat-cell *matCellDef="let element"> {{element.time}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button aria-label="expand row"
+        (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+        @if (expandedElement === element) {
+        <mat-icon>keyboard_arrow_up</mat-icon>
+        } @else {
+        <mat-icon>keyboard_arrow_down</mat-icon>
+        }
+      </button>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <form>
+          <div class="fields">
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Nome</mat-label>
+              <input matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
+            </mat-form-field>
+
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Data</mat-label>
+              <input matInput placeholder="Data" #date="ngModel" [ngModel]="element.date" name="date"
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
+            </mat-form-field>
+
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Horário</mat-label>
+              <input matInput placeholder="Horário" #time="ngModel" [ngModel]="element.time" name="time"
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
+            </mat-form-field>
+          </div>
+          @if (user.role === 'Administrador' || user.role === 'Gerente') { 
+            <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+            <vicci-button accent (click)="onSubmit(element.id, name, date, time)">Salvar</vicci-button>
+          }
+        </form>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+    [class.example-expanded-row]="expandedElement === row"
+    (click)="expandedElement = expandedElement === row ? null : row">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+  <tr class="mat-row noData" *matNoDataRow>
+    <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+      Tabela sem dados.
+    </td>
+  </tr>
+</table>

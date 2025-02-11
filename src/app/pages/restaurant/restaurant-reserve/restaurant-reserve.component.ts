@@ -5,12 +5,12 @@ import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '../../../components/utils/button/button.component';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ProductsRestaurantService } from '../../../services/products-restaurant.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { provideNgxMask, NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-restaurant-reserve',
@@ -30,14 +30,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     FormsModule,
     ReactiveFormsModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    NgxMaskDirective
   ],
   templateUrl: './restaurant-reserve.component.html',
-  styleUrl: './restaurant-reserve.component.scss'
+  styleUrl: './restaurant-reserve.component.scss',
+  providers: [provideNgxMask()]
 })
 export class RestaurantReserveComponent {
   private productsRestaurantReserveService = inject(ProductsRestaurantReserveService)
-  // private fb = inject(FormBuilder)
   private usersService = inject(AuthService)
   private snackbar = inject(MatSnackBar)
 
@@ -47,12 +48,6 @@ export class RestaurantReserveComponent {
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand']
   expandedElement: any
   user: any | null = null
-
-  // productsRestaurantReserve: FormGroup = this.fb.group({
-  //   name: ['', Validators.required],
-  //   date: [null, Validators.required],
-  //   time: [null, Validators.required],
-  // })
 
   ngOnInit(): void {
     this.loadUser()
@@ -84,5 +79,14 @@ export class RestaurantReserveComponent {
         .then(() => this.snackbar.open("Produto excluído com sucesso!", 'Fechar', { duration: 3000 }))
         .catch(() => this.snackbar.open("Erro ao excluir", 'Fechar', { duration: 3000 }))
     })
+  }
+
+  toDate(value: string) {
+    const day = value.slice(0,2)
+    const month = value.slice(2,4)
+    const year = value.slice(4,8)
+    const formattedDate = `${day}/${month}/${year}`
+
+    return value.length === 8 ? formattedDate : value
   }
 }

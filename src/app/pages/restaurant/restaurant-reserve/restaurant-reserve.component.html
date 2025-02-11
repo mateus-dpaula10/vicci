@@ -8,7 +8,7 @@
 
   <ng-container matColumnDef="date">
     <th mat-header-cell *matHeaderCellDef> Data </th>
-    <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+    <td mat-cell *matCellDef="let element"> {{toDate(element.date)}} </td>
   </ng-container>
 
   <ng-container matColumnDef="time">
@@ -44,7 +44,7 @@
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Data</mat-label>
               <input matInput placeholder="Data" #date="ngModel" [ngModel]="element.date" name="date"
-                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'">
+                autocomplete="off" [disabled]="user.role !== 'Administrador' && user.role !== 'Gerente'" mask="00/00/0000">
             </mat-form-field>
 
             <mat-form-field subscriptSizing="dynamic">

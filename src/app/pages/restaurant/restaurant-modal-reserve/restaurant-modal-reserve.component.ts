@@ -89,6 +89,8 @@ export class RestaurantModalReserveComponent {
     }
 
     const payload = this.productsRestaurant.value
+    payload.date = payload.date.toLocaleDateString('pt-BR')
+  
     this.productsRestaurantReserveService.create(payload)
       .then(result => {
         this.dialogRef.close(result)

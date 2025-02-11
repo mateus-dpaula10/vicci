@@ -1,0 +1,117 @@
+<h1>Ajuda</h1>
+
+@if (user.role !== 'Administrador' && user.role !== 'Gerente') {
+    <div class="helps-list">
+        <form [formGroup]="helpsList">
+            <mat-form-field>
+                <mat-label>Nome</mat-label>
+                <input matInput formControlName="name" placeholder="Nome" [readonly]="true">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Categorias</mat-label>
+                <mat-select formControlName="category">
+                    @for (category of categories; track category) {
+                        <mat-option [value]="category">{{ category }}</mat-option>
+                    }
+                </mat-select>            
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Prioridade</mat-label>
+                <mat-select formControlName="priority">
+                    @for (priority of priorities; track priority) {
+                        <mat-option [value]="priority">{{ priority }}</mat-option>
+                    }
+                </mat-select>            
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Dúvidas ou informações adicionais</mat-label>
+                <textarea matInput formControlName="question_information" placeholder="Dúvidas ou informações adicionais"></textarea>
+            </mat-form-field>
+            <vicci-button (click)="sendRequest()" accent>Registrar solicitação</vicci-button>
+        </form>
+    </div>
+}
+
+@if (user.role === 'Administrador' || user.role === 'Gerente') {
+    <div class="table-container">
+        <table mat-table [dataSource]="helpsList$" multiTemplateDataRows class="mat-elevation-z8">        
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nome </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef> Categoria </th>
+            <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+        </ng-container>
+        <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef> Prioridade </th>
+            <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
+        </ng-container>
+        <ng-container matColumnDef="question_information">
+            <th mat-header-cell *matHeaderCellDef> Dúvida ou informação </th>
+            <td mat-cell *matCellDef="let element"> {{element.question_information}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="expand">
+            <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+            <td mat-cell *matCellDef="let element">
+            <button mat-icon-button aria-label="expand row"
+                (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                @if (expandedElement === element) {
+                <mat-icon>keyboard_arrow_up</mat-icon>
+                } @else {
+                <mat-icon>keyboard_arrow_down</mat-icon>
+                }
+            </button>
+            </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+            <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <form>
+                <div class="fields">
+                    <mat-form-field subscriptSizing="dynamic">
+                    <mat-label>Nome</mat-label>
+                    <input [readonly]="true" matInput placeholder="Nome" #name="ngModel" [ngModel]="element.name" name="name"
+                        autocomplete="off">
+                    </mat-form-field>
+                    <mat-form-field subscriptSizing="dynamic">
+                    <mat-label>Categoria</mat-label>
+                    <mat-select #category="ngModel" [ngModel]="element.category" name="category">
+                        @for (category of categories; track category) {
+                        <mat-option [value]="category">{{ category }}</mat-option>
+                        }
+                    </mat-select>    
+                    </mat-form-field>
+                    <mat-form-field subscriptSizing="dynamic">
+                    <mat-label>Prioridade</mat-label>
+                    <mat-select #priority="ngModel" [ngModel]="element.priority" name="priority">
+                        @for (priority of priorities; track priority) {
+                        <mat-option [value]="priority">{{ priority }}</mat-option>
+                        }
+                    </mat-select>    
+                    </mat-form-field>
+                    <mat-form-field subscriptSizing="dynamic">
+                    <mat-label>Dúvida ou informação</mat-label>
+                    <textarea matInput placeholder="Dúvida ou informação" #question_information="ngModel" [ngModel]="element.question_information" name="question_information"></textarea>
+                    </mat-form-field>
+                </div>
+                
+                <vicci-button warn (click)="onDelete(element.id)">Excluir</vicci-button>
+                <vicci-button accent
+                    (click)="onSubmit(element.id, name, category, priority, question_information)">Salvar</vicci-button>
+                </form>
+            </div>
+            </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === row"
+            (click)="expandedElement = expandedElement === row ? null : row">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        </table>        
+    </div>      
+}

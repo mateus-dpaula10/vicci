@@ -94,5 +94,11 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Gerente', 'Administrador', 'Instrutor', 'Aluno', 'Colaborador'] },
         loadComponent: () => import('./pages/training/training.component').then(mod => mod.TrainingComponent)
-    }
+    },
+    {
+        path: 'help',
+        canActivate: [authGuard],
+        data: { roles: ['Gerente', 'Administrador', 'Instrutor', 'Aluno', 'Colaborador'] },
+        loadComponent: () => import('./pages/help/help.component').then(mod => mod.HelpComponent)
+    },
 ];

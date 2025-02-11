@@ -17,7 +17,6 @@ import { map } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { RestaurantModalReserveComponent } from './restaurant-modal-reserve/restaurant-modal-reserve.component';
-import { ProductsRestaurantReserveService } from '../../services/products-restaurant-reserve.service';
 import { RestaurantReserveComponent } from "./restaurant-reserve/restaurant-reserve.component";
 
 @Component({
@@ -33,8 +32,7 @@ import { RestaurantReserveComponent } from "./restaurant-reserve/restaurant-rese
   imports: [
     MatTabsModule, ButtonComponent, MatIconModule, MatFormFieldModule,
     MatInputModule, MatTableModule, FormsModule, MatSelectModule, MatButtonModule,
-    NgxMaskDirective,
-    RestaurantReserveComponent
+    NgxMaskDirective, RestaurantReserveComponent
 ],
   templateUrl: './restaurant.component.html',
   styleUrl: './restaurant.component.scss',
@@ -112,7 +110,7 @@ export class RestaurantComponent {
       if (!res) return
       this.dataSource.data.push(res)
       this.dataSource = new MatTableDataSource(this.dataSource.data)
-      this.snackbar.open("Produto adicionado com sucesso!", 'Fechar', { duration: 3000 })
+      this.snackbar.open("Reserva realizada com sucesso!", 'Fechar', { duration: 3000 })
     })
   }
 

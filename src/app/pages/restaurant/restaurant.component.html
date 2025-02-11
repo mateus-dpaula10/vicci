@@ -1,9 +1,12 @@
+<vicci-button accent (click)="openDialogReserve()"> Reservar refeição </vicci-button>
+
+@if (user.role === 'Administrador' || user.role === 'Gerente') {
+  <app-restaurant-reserve />
+}
+
 @if (user.role === 'Administrador' || user.role === 'Gerente') {
   <vicci-button accent (click)="openDialog()"> Cadastrar produto </vicci-button>
-  <app-restaurant-reserve />
-} @else {
-  <vicci-button accent (click)="openDialogReserve()"> Reservar refeição </vicci-button>
-}
+} 
 
 <mat-tab-group>
   @for (tab of tabs; track tab) {

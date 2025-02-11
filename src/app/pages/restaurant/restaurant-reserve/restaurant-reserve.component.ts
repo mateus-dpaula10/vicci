@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthService } from '../../../services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ProductsRestaurantService } from '../../../services/products-restaurant.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-restaurant-reserve',
@@ -37,7 +39,7 @@ export class RestaurantReserveComponent {
   private productsRestaurantReserveService = inject(ProductsRestaurantReserveService)
   // private fb = inject(FormBuilder)
   private usersService = inject(AuthService)
-  private 
+  private snackbar = inject(MatSnackBar)
 
   productsRestaurantReserve$ = this.productsRestaurantReserveService.productsReserve
   displayedColumns: string[] = ['name', 'date', 'time']
@@ -66,23 +68,21 @@ export class RestaurantReserveComponent {
   }
 
   onSubmit(id: any, name: any, date: any, time: any) {
-    // this.productsRestaurantService.update(id, {
-    //   name: name.value,
-    //   category: category.value,
-    //   weight: weight.value,
-    //   kcal: kcal.value,
-    //   price: price.value
-    // })
-    //   .then(() => this.snackbar.open("Produto atualizado com sucesso!", 'Fechar', { duration: 3000 }))
-    //   .catch(() => this.snackbar.open("Erro ao atualizar", 'Fechar', { duration: 3000 }))
+    this.productsRestaurantReserveService.update(id, {
+      name: name.value,
+      date: date.value,
+      time: time.value
+    })
+      .then(() => this.snackbar.open("Reserva realizada com sucesso!", 'Fechar', { duration: 3000 }))
+      .catch(() => this.snackbar.open("Erro ao atualizar", 'Fechar', { duration: 3000 }))
   }
 
   onDelete(id: any) {
-    // const snackbarRef = this.snackbar.open("Deseja excluir carboidrato?", "Excluir", { duration: 3000 })
-    // snackbarRef.onAction().subscribe(() => {
-    //   this.productsRestaurantService.delete(id)
-    //     .then(() => this.snackbar.open("Produto excluído com sucesso!", 'Fechar', { duration: 3000 }))
-    //     .catch(() => this.snackbar.open("Erro ao excluir", 'Fechar', { duration: 3000 }))
-    // })
+    const snackbarRef = this.snackbar.open("Deseja excluir carboidrato?", "Excluir", { duration: 3000 })
+    snackbarRef.onAction().subscribe(() => {
+      this.productsRestaurantReserveService.delete(id)
+        .then(() => this.snackbar.open("Produto excluído com sucesso!", 'Fechar', { duration: 3000 }))
+        .catch(() => this.snackbar.open("Erro ao excluir", 'Fechar', { duration: 3000 }))
+    })
   }
 }

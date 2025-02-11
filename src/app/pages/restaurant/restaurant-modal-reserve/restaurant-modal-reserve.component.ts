@@ -42,9 +42,9 @@ export class RestaurantModalReserveComponent {
 
   user: any | null = null
   productsRestaurant: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    date: [null, Validators.required],
-    time: [null, Validators.required],
+    name: [Validators.required],
+    date: [Validators.required],
+    time: [Validators.required]
   })
   times: any[] = [
     '06:00',
@@ -90,7 +90,9 @@ export class RestaurantModalReserveComponent {
 
     const payload = this.productsRestaurant.value
     this.productsRestaurantReserveService.create(payload)
-      .then(result => this.dialogRef.close(result))
-      .catch(() => this.snackbar.open("Erro ao cadastrar produto!", 'Fechar', { duration: 3000 }))
+      .then(result => {
+        this.dialogRef.close(result)
+      } )
+      .catch(() => this.snackbar.open("Erro ao realizar a reserva!", 'Fechar', { duration: 3000 }))
   }
 }

@@ -4,7 +4,7 @@
     <form [formGroup]="productsRestaurant">
         <mat-form-field subscriptSizing="dynamic">
             <mat-label>Nome</mat-label>
-            <mat-select>
+            <mat-select formControlName="name">
                 @for (user_ of usersAll$ | async; track user) {
                     <mat-option [value]="user_.name" [disabled]="user_.email !== user.email && user.role !== 'Administrador' && user.role !== 'Gerente'">{{ user_.name }}</mat-option>
                 }
